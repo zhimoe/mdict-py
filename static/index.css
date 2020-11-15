@@ -1,0 +1,33 @@
+main {
+    min-height: calc(100vh - 50px);
+}
+
+footer {
+    height: 50px;
+    text-align: center;
+    font-family: Menlo, "Fira Code", "Courier New", monospace;
+    font-size: 10px;
+
+}
+
+#top-area {
+    text-align: center;
+    /* todo: 置顶不随页面滚动 */
+}
+
+input, #dict-options {
+    width: 600px;
+    height: 50px;
+    border-radius: 3px;
+    outline-style: none;
+    border: 1px solid #ccc;
+    padding: 8px;
+    vertical-align: middle; /* 解决input和button上下错位问题 */
+    font-size: 16px;
+    font-family: Menlo, "Fira Code", "Courier New", "sim sun", monospace;
+}
+
+#dict-options {
+    width: 100px;
+    font-weight: bold;
+}
