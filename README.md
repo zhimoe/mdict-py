@@ -18,12 +18,16 @@ MDX Server 核心功能由 [mdict-query](https://github.com/mmjang/mdict-query) 
 2. 根据放入的mdx，修改mdx_server.py下面的DICTS_MAP里面的词典和static/index.html相对应。
 3. >pip install -r requirements.txt
 4. 启动mdx_server，打开http://localhost:8080
+
+如果需要中文例句模糊搜索，请在config.ini配置ES服务器，如有用户密码，请修改es.py文件
 ```
 
 ## TODO
 - [ ] 动词的时态处理
 - [ ] mdx返回结果包含mdd资源，无法获取
 - [x] 增加中文词典
+- [x] 增加中文例句搜索，可以借助ES实现朗文4的例句搜索
+
 
 ## 效果图
 ![mdict](./images/mdict.png)

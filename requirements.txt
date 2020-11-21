@@ -1,2 +1,0 @@
-inflect==4.1.0
-pyspellchecker==0.5.5

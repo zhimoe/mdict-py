@@ -8,19 +8,13 @@ from typing import List
 import inflect
 from spellchecker import SpellChecker
 
+from es import example_parse_lsc4, ingest, search
 from file_util import *
 
 not_found = """
             <link rel="stylesheet" type="text/css" href="O8C.css">
             <span backup-class="unbox_header_1" class="th">
             查无结果
-            </span>
-        """
-
-home_page = """
-            <link rel="stylesheet" type="text/css" href="O8C.css">
-            <span backup-class="unbox_header_1" class="th">
-            欢迎使用牛津高阶词典，请在url/后面跟上你想要查询的单词
             </span>
         """
 
@@ -49,13 +43,17 @@ def get_definition_mdx(word, builder) -> List[bytes]:
         content = builder.mdx_lookup(word.upper())
     if len(content) < 1:
         content = builder.mdx_lookup(plural2singular(word.lower()))
+    if is_chinese(word):
+        content += search(word)
     if len(content) < 1:
         return [not_found.encode('utf-8')]
+
     pattern = re.compile(r"@@@LINK=([\w\s]*)")
     rst = pattern.match(content[0])
     if rst is not None:
         link = rst.group(1).strip()
         content = builder.mdx_lookup(link)
+    # remove \r\n and entry:/
     str_content = ""
     if len(content) > 0:
         for c in content:

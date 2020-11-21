@@ -7,10 +7,9 @@ import os
 import re
 import sqlite3
 import sys
-# zlib compression is used for engine version >=2.0
-import zlib
+import zlib  # zlib compression is used for engine version >=2.0
 from struct import pack
-
+import logging as log
 from readmdict import MDX, MDD
 
 # LZO compression is used for engine version < 2.0
@@ -23,15 +22,43 @@ except ImportError:
 # 2x3 compatible
 if sys.hexversion >= 0x03000000:
     unicode = str
+log.getLogger("mdx_query")
 
 version = '1.1'
 
+if __name__ == '__main__':
+    conn = sqlite3.connect("/home/zhimoe/code/mdict-py/LSC4.mdx.db")
+    cursor = conn.execute('SELECT key_text FROM MDX_INDEX')
+    keys = [item[0] for item in cursor]
+    conn.close()
+    print(len(keys))
+
+
+def query_mdx_mdd_keys(conn, word):
+    if word:
+        if '*' in word:
+            word = word.replace('*', '%')
+        else:
+            word = word + '%'
+        cursor = conn.execute('SELECT key_text FROM MDX_INDEX WHERE key_text LIKE \"' + word + '\"')
+        keys = [item[0] for item in cursor]
+    else:
+        cursor = conn.execute('SELECT key_text FROM MDX_INDEX')
+        keys = [item[0] for item in cursor]
+    conn.close()
+    return keys
+
 
 class IndexBuilder(object):
+    """将mdx/mdd文件解析出来，单词和对应的解释内容在mdx文件中的偏移量记录到sqlite3数据库中
+    查询时，则根据单词先到sqlite3获取到偏移量，然后读取文件。
+    解析mdx的过程比较复杂，考虑到了不同版本mdx文件规范，目前不支持加密的mdx
+    """
+
     # todo: enable history
-    def __init__(self, fname, encoding="", passcode=None, force_rebuild=False, enable_history=False, sql_index=True,
+    def __init__(self, file_name, encoding="", passcode=None, force_rebuild=False, enable_history=False, sql_index=True,
                  check=False):
-        self._mdx_file = fname
+        self._mdx_file = file_name
         self._mdd_file = ""
         self._encoding = ''
         self._stylesheet = {}
@@ -40,59 +67,61 @@ class IndexBuilder(object):
         self._description = ''
         self._sql_index = sql_index
         self._check = check
-        _filename, _file_extension = os.path.splitext(fname)
-        assert (_file_extension == '.mdx')
-        assert (os.path.isfile(fname))
+        _filename, _extension = os.path.splitext(file_name)
+        assert (_extension == '.mdx')
+        assert (os.path.isfile(file_name))
         self._mdx_db = _filename + ".mdx.db"
         # make index anyway
         if force_rebuild:
             self._make_mdx_index(self._mdx_db)
-            if os.path.isfile(_filename + '.mdd'):
-                self._mdd_file = _filename + ".mdd"
-                self._mdd_db = _filename + ".mdd.db"
-                self._make_mdd_index(self._mdd_db)
+            # 如果有同名的mdd文件，也重建索引
+            self._mdd_index(self, _filename)
 
+        # if mdx.db exist, then init IndexBuilder from db
         if os.path.isfile(self._mdx_db):
-            # read from META table
-            conn = sqlite3.connect(self._mdx_db)
-            cursor = conn.execute("SELECT * FROM META WHERE key = \"version\"")
-            # 判断有无版本号
-            for cc in cursor:
-                self._version = cc[1]
-            ################# if not version info #############
-            if not self._version:
-                print("version info not found")
-                conn.close()
-                self._make_mdx_index(self._mdx_db)
-                print("mdx.db rebuilt!")
-                if os.path.isfile(_filename + '.mdd'):
-                    self._mdd_file = _filename + ".mdd"
-                    self._mdd_db = _filename + ".mdd.db"
-                    self._make_mdd_index(self._mdd_db)
-                    print("mdd.db rebuilt!")
-            cursor = conn.execute("SELECT * FROM META WHERE key = \"encoding\"")
-            for cc in cursor:
-                self._encoding = cc[1]
-            cursor = conn.execute("SELECT * FROM META WHERE key = \"stylesheet\"")
-            for cc in cursor:
-                self._stylesheet = json.loads(cc[1])
-
-            cursor = conn.execute("SELECT * FROM META WHERE key = \"title\"")
-            for cc in cursor:
-                self._title = cc[1]
-
-            cursor = conn.execute("SELECT * FROM META WHERE key = \"description\"")
-            for cc in cursor:
-                self._description = cc[1]
+            self._init_from_db(_filename)
         else:
             self._make_mdx_index(self._mdx_db)
+        self._mdd_index(_filename)
 
+    def _mdd_index(self, _filename):
         if os.path.isfile(_filename + ".mdd"):
             self._mdd_file = _filename + ".mdd"
             self._mdd_db = _filename + ".mdd.db"
             if not os.path.isfile(self._mdd_db):
                 self._make_mdd_index(self._mdd_db)
-        pass
+
+    def _init_from_db(self, _filename: str):
+        """init IndexBuilder from mdx.db file"""
+        # read from META table
+        conn = sqlite3.connect(self._mdx_db)
+        cursor = conn.execute("SELECT * FROM META WHERE key = \"version\"")
+        # 判断有无版本号
+        for cc in cursor:
+            self._version = cc[1]
+        # if not version info
+        if not self._version:
+            print("version info not found")
+            conn.close()
+            self._make_mdx_index(self._mdx_db)
+            print("mdx.db rebuilt!")
+            if os.path.isfile(_filename + '.mdd'):
+                self._mdd_file = _filename + ".mdd"
+                self._mdd_db = _filename + ".mdd.db"
+                self._make_mdd_index(self._mdd_db)
+                print("mdd.db rebuilt!")
+        cursor = conn.execute("SELECT * FROM META WHERE key = \"encoding\"")
+        for cc in cursor:
+            self._encoding = cc[1]
+        cursor = conn.execute("SELECT * FROM META WHERE key = \"stylesheet\"")
+        for cc in cursor:
+            self._stylesheet = json.loads(cc[1])
+        cursor = conn.execute("SELECT * FROM META WHERE key = \"title\"")
+        for cc in cursor:
+            self._title = cc[1]
+        cursor = conn.execute("SELECT * FROM META WHERE key = \"description\"")
+        for cc in cursor:
+            self._description = cc[1]
 
     def _replace_stylesheet(self, txt):
         # substitute stylesheet definition
@@ -221,6 +250,14 @@ class IndexBuilder(object):
         conn.close()
 
     def get_mdx_by_index(self, fmdx, index):
+        record = self.get_record_by_index(fmdx, index)
+        record = record.decode(self._encoding, errors='ignore').strip(u'\x00').encode('utf-8')
+        if self._stylesheet:
+            record = self._replace_stylesheet(record)
+        record = record.decode('utf-8')
+        return record
+
+    def get_record_by_index(self, fmdx, index):
         fmdx.seek(index['file_pos'])
         record_block_compressed = fmdx.read(index['compressed_size'])
         record_block_type = record_block_compressed[:4]
@@ -241,33 +278,10 @@ class IndexBuilder(object):
             # decompress
             _record_block = zlib.decompress(record_block_compressed[8:])
         record = _record_block[index['record_start'] - index['offset']:index['record_end'] - index['offset']]
-        record = record = record.decode(self._encoding, errors='ignore').strip(u'\x00').encode('utf-8')
-        if self._stylesheet:
-            record = self._replace_stylesheet(record)
-        record = record.decode('utf-8')
         return record
 
     def get_mdd_by_index(self, fmdx, index):
-        fmdx.seek(index['file_pos'])
-        record_block_compressed = fmdx.read(index['compressed_size'])
-        record_block_type = record_block_compressed[:4]
-        record_block_type = index['record_block_type']
-        decompressed_size = index['decompressed_size']
-        # adler32 = unpack('>I', record_block_compressed[4:8])[0]
-        if record_block_type == 0:
-            _record_block = record_block_compressed[8:]
-            # lzo compression
-        elif record_block_type == 1:
-            if lzo is None:
-                print("LZO compression is not supported")
-                # decompress
-            header = b'\xf0' + pack('>I', index['decompressed_size'])
-            _record_block = lzo.decompress(record_block_compressed[8:], initSize=decompressed_size, blockSize=1308672)
-            # zlib compression
-        elif record_block_type == 2:
-            # decompress
-            _record_block = zlib.decompress(record_block_compressed[8:])
-        data = _record_block[index['record_start'] - index['offset']:index['record_end'] - index['offset']]
+        data = self.get_record_by_index(fmdx, index)
         return data
 
     def mdx_lookup(self, keyword):
@@ -276,14 +290,13 @@ class IndexBuilder(object):
         lookup_result_list = []
         mdx_file = open(self._mdx_file, 'rb')
         for result in cursor:
-            index = {}
-            index['file_pos'] = result[1]
-            index['compressed_size'] = result[2]
-            index['decompressed_size'] = result[3]
-            index['record_block_type'] = result[4]
-            index['record_start'] = result[5]
-            index['record_end'] = result[6]
-            index['offset'] = result[7]
+            index = {'file_pos': result[1],
+                     'compressed_size': result[2],
+                     'decompressed_size': result[3],
+                     'record_block_type': result[4],
+                     'record_start': result[5],
+                     'record_end': result[6],
+                     'offset': result[7]}
             lookup_result_list.append(self.get_mdx_by_index(mdx_file, index))
         conn.close()
         mdx_file.close()
@@ -295,8 +308,12 @@ class IndexBuilder(object):
         lookup_result_list = []
         mdd_file = open(self._mdd_file, 'rb')
         for result in cursor:
-            index = {'file_pos': result[1], 'compressed_size': result[2], 'decompressed_size': result[3],
-                     'record_block_type': result[4], 'record_start': result[5], 'record_end': result[6],
+            index = {'file_pos': result[1],
+                     'compressed_size': result[2],
+                     'decompressed_size': result[3],
+                     'record_block_type': result[4],
+                     'record_start': result[5],
+                     'record_end': result[6],
                      'offset': result[7]}
             lookup_result_list.append(self.get_mdd_by_index(mdd_file, index))
         mdd_file.close()
@@ -307,33 +324,14 @@ class IndexBuilder(object):
         if not self._mdd_db:
             return []
         conn = sqlite3.connect(self._mdd_db)
-        if query:
-            if '*' in query:
-                query = query.replace('*', '%')
-            else:
-                query = query + '%'
-            cursor = conn.execute('SELECT key_text FROM MDX_INDEX WHERE key_text LIKE \"' + query + '\"')
-            keys = [item[0] for item in cursor]
-        else:
-            cursor = conn.execute('SELECT key_text FROM MDX_INDEX')
-            keys = [item[0] for item in cursor]
-        conn.close()
-        return keys
+        return query_mdx_mdd_keys(conn, query)
 
     def get_mdx_keys(self, query=''):
         conn = sqlite3.connect(self._mdx_db)
-        if query:
-            if '*' in query:
-                query = query.replace('*', '%')
-            else:
-                query = query + '%'
-            cursor = conn.execute('SELECT key_text FROM MDX_INDEX WHERE key_text LIKE \"' + query + '\"')
-            keys = [item[0] for item in cursor]
-        else:
-            cursor = conn.execute('SELECT key_text FROM MDX_INDEX')
-            keys = [item[0] for item in cursor]
-        conn.close()
-        return keys
+        return query_mdx_mdd_keys(conn, query)
+
+    def get_mdx_db(self):
+        return self._mdx_db
 
 # mdx_builder = IndexBuilder("oald.mdx")
 # text = mdx_builder.mdx_lookup('dedication')

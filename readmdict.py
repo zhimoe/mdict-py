@@ -22,6 +22,7 @@ from io import BytesIO
 import re
 import sys
 import json
+from typing import Dict
 
 from ripemd128 import ripemd128
 from pureSalsa20 import Salsa20
@@ -88,6 +89,17 @@ def _decrypt_regcode_by_email(reg_code, email):
     return encrypt_key
 
 
+def _parse_header(header: str) -> Dict[str, str]:
+    """
+    extract attributes from <Dict attr="value" ... >
+    """
+    taglist = re.findall(b'(\w+)="(.*?)"', header, re.DOTALL)
+    tagdict = {}
+    for key, value in taglist:
+        tagdict[key] = _unescape_entities(value)
+    return tagdict
+
+
 class MDict(object):
     """
     Base class which reads in header and key block.
@@ -120,16 +132,6 @@ class MDict(object):
 
     def _read_number(self, f):
         return unpack(self._number_format, f.read(self._number_width))[0]
-
-    def _parse_header(self, header):
-        """
-        extract attributes from <Dict attr="value" ... >
-        """
-        taglist = re.findall(b'(\w+)="(.*?)"', header, re.DOTALL)
-        tagdict = {}
-        for key, value in taglist:
-            tagdict[key] = _unescape_entities(value)
-        return tagdict
 
     def _decode_key_block_info(self, key_block_info_compressed):
         if self._version >= 2:
@@ -248,7 +250,7 @@ class MDict(object):
             key_list += [(key_id, key_text)]
         return key_list
 
-    def _read_header(self):
+    def _read_header(self) -> Dict[str, str]:
         f = open(self._fname, 'rb')
         # number of bytes of header text
         header_bytes_size = unpack('>I', f.read(4))[0]
@@ -262,7 +264,7 @@ class MDict(object):
 
         # header text in utf-16 encoding ending with '\x00\x00'
         header_text = header_bytes[:-2].decode('utf-16').encode('utf-8')
-        header_tag = self._parse_header(header_text)
+        header_tag = _parse_header(header_text)
         if not self._encoding:
             encoding = header_tag[b'Encoding']
             if sys.hexversion >= 0x03000000:
@@ -610,7 +612,7 @@ class MDD(MDict):
 
 class MDX(MDict):
     """
-    MDict dictionary file format (*.MDD) reader.
+    MDict dictionary file format (*.MDX) reader.
     >>> mdx = MDX('example.mdx')
     >>> len(mdx)
     42481
@@ -664,15 +666,15 @@ class MDX(MDict):
         offset = 0
         i = 0
         size_counter = 0
-        ###最后的索引表的格式为
-        ###  key_text(关键词，可以由后面的 keylist 得到)
-        ###  file_pos(record_block开始的位置)
-        ###  compressed_size(record_block压缩前的大小)
-        ###  decompressed_size(解压后的大小)
-        ###  record_block_type(record_block 的压缩类型)
-        ###  record_start (以下三个为从 record_block 中提取某一调记录需要的参数，可以直接保存）
-        ###  record_end
-        ###  offset
+        # 最后的索引表的格式为
+        #  key_text(关键词，可以由后面的 keylist 得到)
+        #  file_pos(record_block开始的位置)
+        #  compressed_size(record_block压缩前的大小)
+        #  decompressed_size(解压后的大小)
+        #  record_block_type(record_block 的压缩类型)
+        #  record_start (以下三个为从 record_block 中提取某一调记录需要的参数，可以直接保存）
+        #  record_end
+        #  offset
         for compressed_size, decompressed_size in record_block_info_list:
             record_block_compressed = f.read(compressed_size)
             ###### 要得到 record_block_compressed 需要得到 compressed_size (这个可以直接记录）

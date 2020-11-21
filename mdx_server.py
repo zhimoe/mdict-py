@@ -5,6 +5,7 @@ import threading
 from urllib.parse import parse_qs
 from wsgiref.simple_server import make_server, WSGIRequestHandler
 
+import es
 from mdict_query import IndexBuilder
 from mdx_util import *
 
@@ -38,10 +39,10 @@ RESOURCE_DIR = os.path.join("./static/")
 STATIC_MAP = get_static_map(RESOURCE_DIR, CONTENT_TYPE_MAP)
 
 BUILDERS = dict()
-HanDcit = "hycd_3rd" # 中文词典的名称
+HanDcit = "hycd_3rd"  # 中文词典的名称
 DICTS_MAP = {"LSC4": "./LSC4.mdx",
-            #  "O8C": "./O8C.mdx",
-             HanDcit: "./"+ HanDcit +".mdx"}
+             #  "O8C": "./O8C.mdx",
+             HanDcit: "./" + HanDcit + ".mdx"}
 
 
 def build_dict() -> Dict[str, IndexBuilder]:
@@ -125,6 +126,10 @@ def web_server():
 
 if __name__ == '__main__':
     log.getLogger().setLevel(log.DEBUG)
+    # disable these logger
+    for _ in ("boto", "elasticsearch", "urllib3"):
+        log.getLogger(_).setLevel(log.CRITICAL)
     build_dict()
+    es.indexing(BUILDERS["LSC4"])
     t = threading.Thread(target=web_server, args=())
     t.start()
