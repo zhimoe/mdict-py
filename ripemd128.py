@@ -116,8 +116,8 @@ def ripemd128(message):
         (Ap, Bp, Cp, Dp) = (h0, h1, h2, h3)
         for j in range(64):
             T = rol(s[j], add(A, f(j, B, C, D), X[i][r[j]], K(j)))
-            T = rol(sp[j], add(Ap, f(63 - j, Bp, Cp, Dp), X[i][rp[j]], Kp(j)))
             (A, D, C, B) = (D, C, B, T)
+            T = rol(sp[j], add(Ap, f(63 - j, Bp, Cp, Dp), X[i][rp[j]], Kp(j)))
             (Ap, Dp, Cp, Bp) = (Dp, Cp, Bp, T)
         T = add(h1, C, Dp)
         h1 = add(h2, D, Ap)
