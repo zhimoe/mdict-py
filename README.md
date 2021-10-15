@@ -22,6 +22,19 @@ MDX Server 核心功能由 [mdict-query](https://github.com/mmjang/mdict-query) 
 如果需要中文例句模糊搜索，请在config.ini配置ES服务器，如有用户密码，请修改es.py文件
 ```
 
+## es docker使用
+```bash
+# 启动一个es container
+docker run -d --name elasticsearch --net host -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:6.8.18
+# 进入刚才的container 下载插件并解压到plugins
+docker exec -it ff50bb5b1939 /bin/bash
+mkdir ik && cd ik && wget https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.8.18/elasticsearch-analysis-ik-6.8.18.zip
+unzip elasticsearch-analysis-ik-6.8.18.zip
+cd .. && mv ik plugins
+# 退出重启container
+docker restart elasticsearch
+```
+
 ## TODO
 - [ ] 动词的时态处理
 - [ ] mdx返回结果包含mdd资源，无法获取
