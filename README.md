@@ -26,9 +26,11 @@ Mdict项目是一个糅合了MDX词典、ES例句搜索和AI模型翻译的多�
 
 ## 使用
 ### 本地
-1. clone后如果不使用es和ai的话,修改config.ini中Enable=false
-2. pip install requirements.txt
-3. python app.py
+```bash
+# git clone后如果不使用es和ai的话,修改config.ini中Enable=false
+pip install requirements.txt
+python app.py
+```
 ### 使用es和ai
 #### es docker使用
 ```bash
