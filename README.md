@@ -1,28 +1,36 @@
-# mdict-py
+## Mdict说明
+Mdict项目是一个糅合了MDX词典、ES例句搜索和AI模型翻译的多源搜索功能Web词典。特别适合部署在内网中学习使用或者给孩子学习使用。
 
-## 参考
-本项目基于[MDX Server](https://github.com/ninja33/mdx-server)优化而来。
-> 目前流行的 MDX 词典文件只能在 Mdict, GoldenDict, 欧路，深蓝等词典软件中使用，而不能将内容对外输出。MDX Server 通过读取 MDX、MDD 格式的词典文件，对外部提供一个标准的 HTTP 服务接口。使得一些需要词典服务的软件，比如 Kindlemate，Anki 划词助手以及其他工具可以利用这个本地服务，灵活选取所需的 MDX 词典，批量或者单独获取单词的解释。
+特点：
 
-MDX Server 核心功能由 [mdict-query](https://github.com/mmjang/mdict-query) 和 [PythonDictionaryOnline](https://github.com/amazon200code/PythonDictionaryOnline) 整合而成。
+1. 自动识别中英文选择对应mdx词典，目前英文词典包含牛津8和朗文4，中文词典包含汉语词典3
+2. 英文尝试拼写纠错功能，动词时态纠错
+3. 如果配置了中文会尝试搜索朗文的例句，模糊搜索，对于有英语基础的同学很有用
+4. 如果配置了AI模型，会使用机器学习模型翻译，翻译结果比较粗糙，但是可以参考
 
-主要的优化点有：
-1. 增加了一个查询页面，而不是通过url path传递参数，样式更加美观
-2. 可以选择切换词典，可以自动识别中英文（如果有中文词典的话）
-3. 增加拼写纠错
+## 效果演示
 
+英文翻译
+![英文翻译](examples/en_example.png)
+中文翻译
+![中文翻译](examples/zh_example.png)
 
-## 使用说明
-```bash
-1. git clone 本项目，将mdx放在根目录下面，如果mdx有独立css文件，放在static目录下面
-2. 根据放入的mdx，修改mdx_server.py下面的DICTS_MAP里面的词典和static/index.html相对应。
-3. >pip install -r requirements.txt
-4. 启动mdx_server，打开http://localhost:8080
+## 感谢项目MDX Server 
+1. mdx解析
 
-如果需要中文例句模糊搜索，请在config.ini配置ES服务器，如有用户密码，请修改es.py文件
-```
+    MDX词典文件是一种流行的词典打包格式。目前只能在 Mdict, GoldenDict, 欧路，深蓝等词典软件中使用，而不能将内容对外输出。
+    MDX Server 通过读取 MDX、MDD 格式的词典文件，对外部提供一个标准的 HTTP 服务接口。
+    MDX Server 核心功能由 [mdict-query](https://github.com/mmjang/mdict-query) 和 [PythonDictionaryOnline](https://github.com/amazon200code/PythonDictionaryOnline) 整合而成。
 
-## es docker使用
+2. [transformer中英文翻译模型项目](https://huggingface.co/Helsinki-NLP)
+
+## 使用
+### 本地
+1. clone后如果不使用es和ai的话,修改config.ini中Enable=false
+2. pip install requirements.txt
+3. python app.py
+### 使用es和ai
+#### es docker使用
 ```bash
 # 启动一个es container
 docker run -d --name elasticsearch --net host -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:6.8.18
@@ -33,14 +41,14 @@ unzip elasticsearch-analysis-ik-6.8.18.zip
 cd .. && mv ik plugins
 # 退出重启container
 docker restart elasticsearch
+
+#可以使用cerebro查看es
+docker run --name cerebro -e CEREBRO_PORT=9001 -p 9001:9001 --network=host lmenezes/cerebro
 ```
 
+### Dockerfile
+
+
 ## TODO
-- [ ] 动词的时态处理
-- [ ] mdx返回结果包含mdd资源，无法获取
-- [x] 增加中文词典
-- [x] 增加中文例句搜索，可以借助ES实现朗文4的例句搜索
-
-
-## 效果图
-![mdict](./images/mdict.png)
+1. 增加牛津词典的例句到ES
+2. 寻找更好的AI翻译模型

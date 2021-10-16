@@ -4,8 +4,8 @@ __pycache__/
 *$py.class
 
 # MDX, MDD and index DB
-*.db
 *.zip
+
 
 # Manual
 doc/
@@ -95,3 +95,5 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+data/**/*.bin
