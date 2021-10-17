@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-import os
 import io
+import os
 import re
 from typing import Dict, Any
 
 
-def read_all_lines(path) -> str:
+def read_all_lines(path:str) -> str:
     """读取文本文件返回一行string"""
     line_str = ''
     with io.open(path, 'r', -1, 'utf-8') as f:
@@ -91,12 +91,12 @@ def get_static_map(resource_path: str, content_type_map: Dict[str, Any]) -> Dict
     return result
 
 
-def is_chinese(word: str) -> bool:
-    """判断是否是中文字符串
+def contains_chinese(word: str) -> bool:
+    """判断是否包含中文字符串，中英文混合判定为中文
     :param word
     :return bool
     """
     for ch in word:
-        if not u'\u4e00' <= ch <= u'\u9fff':
-            return False
-    return True
+        if u'\u4e00' <= ch <= u'\u9fff':
+            return True
+    return False

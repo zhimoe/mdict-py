@@ -1,11 +1,16 @@
 import configparser
 
+from ai.dl_modles import download_models
 from ai.translate import Translator
 
 translator = Translator("data")
 
 Config = configparser.ConfigParser()
 Config.read("config.ini")
+
+if Config["AI"]["Enable"] == "true":
+    print(">>>starting download the ai models...")
+    download_models()
 
 
 def get_prediction(text: str, source: str, target: str):
