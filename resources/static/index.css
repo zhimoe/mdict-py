@@ -13,22 +13,25 @@ footer {
     text-align: center;
     /* todo: 置顶不随页面滚动 */
 }
-h1,h2, h3 {
-    font-family: "Fira Code",monospace, "PingFang SC", "Microsoft YaHei";
+
+h1, h2, h3 {
+    font-family: "Fira Code", monospace, "PingFang SC", "Microsoft YaHei";
 }
-input, #dict-options {
+
+input, #lucky-btn {
     width: 600px;
     height: 50px;
     border-radius: 3px;
     outline-style: none;
-    border: 1px solid #ccc;
+    border: 1px solid #e8c49a;
     padding: 8px;
     vertical-align: middle; /* 解决input和button上下错位问题 */
     font-size: 16px;
-    font-family: "Fira Code",monospace, "PingFang SC", "Microsoft YaHei";
+    font-family: "Fira Code", monospace, "PingFang SC", "Microsoft YaHei";
 }
 
-#dict-options {
+#lucky-btn {
     width: 100px;
     font-weight: bold;
+    border: 1px solid #e8c49a;
 }

@@ -2,6 +2,7 @@ from flask import Flask, url_for, render_template
 from flask import request
 
 from query import qry_mdx_def
+from lucky import get_random_word
 
 app = Flask(__name__,
             static_url_path='',
@@ -18,6 +19,13 @@ def index():
 @app.route("/query", methods=['POST'])
 def query():
     word = request.form.get("word")
+    print(f"mdx query for={word}")
+    return qry_mdx_def(word)
+
+
+@app.route("/lucky", methods=['GET'])
+def feeling_lucky():
+    word = get_random_word()
     print(f"mdx query for={word}")
     return qry_mdx_def(word)
 
