@@ -27,7 +27,7 @@ function postQuery() {
         return;
     }
     queryMdx(word);
-    queryAI(word);
+
 }
 
 /**
@@ -61,21 +61,6 @@ function queryMdx(word) {
     });
 }
 
-/*查询机器学习模型翻译结果*/
-function queryAI(word) {
-    $('#ai-resp').hide();
-    $.ajax({
-        url: './ai',
-        type: 'POST',
-        data: {'word': word},
-        dataType: 'html',
-        success: function (data) {
-            if (data !== '') {
-                $('#ai-resp').addClass('ids-g').html(data).show();
-            }
-        }
-    });
-}
 
 // 捕获ctrl+L快捷键
 $(window).bind('keyup keydown', function (e) {

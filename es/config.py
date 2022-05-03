@@ -1,17 +1,17 @@
 import configparser
 
-from elasticsearch import Elasticsearch
+from elasticsearch6 import Elasticsearch
 
 Config = configparser.ConfigParser()
 Config.read("config.ini")
-esClt: Elasticsearch = None
+esClient: Elasticsearch = None
 ES_ENABLED = False
 INDEX = "mdx_examples_index"
 
 if Config["ES"]["Enable"] == "true":
-    esClt = Elasticsearch([{'host': Config["ES"]["Host"], 'port': Config["ES"]["Port"]}])
+    esClient = Elasticsearch([{'host': Config["ES"]["Host"], 'port': Config["ES"]["Port"]}])
     try:
-        if esClt.ping():
+        if esClient.ping():
             ES_ENABLED = True
     except:
         ES_ENABLED = False

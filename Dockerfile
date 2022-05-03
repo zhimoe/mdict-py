@@ -1,15 +1,10 @@
-FROM python-3.6.6:latest
+FROM python-3.9.12:latest
 
 COPY ./ /opt/
 
-USER root
-
 RUN cd /opt/ && \
-    pip install --no-cache-dir -r requirements.txt
-
-RUN cd /opt/ && rm ./*.whl
-
-USER ocpuser
+    pip install pipenv && \
+    pipenv install
 
 WORKDIR /opt/
 

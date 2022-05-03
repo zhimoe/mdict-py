@@ -3,9 +3,9 @@ import sqlite3
 from typing import Tuple, List
 
 from bs4 import BeautifulSoup
-from elasticsearch import helpers
+from elasticsearch6 import helpers
 
-from es.config import INDEX, esClt
+from es.config import INDEX, esClient
 
 
 def example_parse_o8c(dict_name: str, word: str, html: str) -> Tuple[str, str, str]:
@@ -60,7 +60,7 @@ def ingest(dict_name: str, examples: List[Tuple[str, str, str, str]]) -> int:
             "_id": dict_name + "-" + word + "-" + re.sub(r'\W+', '', en)
         }
         docs.append(body)
-    helpers.bulk(esClt, docs)
+    helpers.bulk(esClient, docs)
     return len(examples)
 
 
@@ -98,7 +98,7 @@ def es_indexing(builder) -> int:
 
 def create_index() -> bool:
     """创建index"""
-    if esClt.indices.exists(INDEX):
+    if esClient.indices.exists(INDEX):
         print(f"the index {INDEX} already exists,indexing skipped")
         return False
     mappings = {
@@ -138,4 +138,4 @@ def create_index() -> bool:
         }
     }
 
-    return esClt.indices.create(index=INDEX, body=mappings)
+    return esClient.indices.create(index=INDEX, body=mappings)

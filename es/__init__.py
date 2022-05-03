@@ -20,7 +20,7 @@ def search_han_examples(word: str) -> str:
             }
         }
     }
-    res = config.esClt.search(index=config.INDEX, body=dsl)
+    res = config.esClient.search(index=config.INDEX, body=dsl)
     examples_html = """<strong>朗文4相关例句</strong><link rel="stylesheet" type="text/css" href="LSC4.css">"""
     if res["hits"]["total"] > 0:
         hits = res["hits"]["hits"]

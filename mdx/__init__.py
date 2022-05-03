@@ -22,12 +22,14 @@ def plural2singular(plural) -> str:
 error_msg = """
             <link rel="stylesheet" type="text/css" href="O8C.css">
             <span backup-class="unbox_header_1" class="th">
-            系统异常，请稍后再试
+            系统异常，请稍后再试.  
             </span>"""
 
 
 def get_definition_mdx(word: str, dict_opt: str) -> str:
     """根据关键字得到MDX词典的解释"""
+    if dict_opt not in MdxIndexBuilders:
+        return error_msg
     dict_index_builder = MdxIndexBuilders[dict_opt]
     try:
         if not word:

@@ -5,16 +5,17 @@ main {
 footer {
     height: 50px;
     text-align: center;
-    font-family: consolas, "lucida console", monospace;
+    font-family: consolas, "fira code", monospace;
     font-size: 10px;
-
 }
 
 #top-area {
     text-align: center;
     /* todo: 置顶不随页面滚动 */
 }
-
+h1,h2, h3 {
+    font-family: "Fira Code",monospace, "PingFang SC", "Microsoft YaHei";
+}
 input, #dict-options {
     width: 600px;
     height: 50px;
@@ -24,7 +25,7 @@ input, #dict-options {
     padding: 8px;
     vertical-align: middle; /* 解决input和button上下错位问题 */
     font-size: 16px;
-    font-family: consolas, "Courier New", "sim sun", monospace;
+    font-family: "Fira Code",monospace, "PingFang SC", "Microsoft YaHei";
 }
 
 #dict-options {
