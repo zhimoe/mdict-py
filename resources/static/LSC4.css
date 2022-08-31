@@ -1,0 +1,484 @@
+﻿.hw {
+	display:none
+}
+/*词头*/
+	.Headword_superscript {
+	display:none
+}
+/*词头角标*/
+	.Defining2000 {
+	display:none
+}
+.HeadwordPicId {
+	display:none;
+}
+.combine {
+	display: none;
+}
+.entry {
+	font-size: 16px ;
+	font-weight: normal ;
+	font-style: normal;
+	font-family: Segoe UI, Lucida Grande, Lucida Sans, Roboto, Droid Sans Mono, Droid Sans, sans-serif;
+	padding: 0 2px 0 2px;
+	-webkit-font-smoothing: subpixel-antialiased;
+	line-height: 24px;
+}
+.Headword_Disp {
+	}
+.headword {
+	font-size: 23px ;
+	font-weight: bold;
+	color: blueviolet ;
+	font-style: normal;
+	font-family: Segoe UI, Lucida Grande, Lucida Sans, Roboto, Droid Sans Mono, Droid Sans, sans-serif;
+	display: block;
+	margin-bottom: 6px }
+/*词条词*/
+	.hw2 {
+	font-weight: bold;
+	font-weight: 700;
+	color: #7058a3;
+	font-style: normal;
+}
+/*比如缩写*/
+	.he {
+	font-size: 15px ;
+	font-weight: bold;
+	font-weight: bold;
+	color: #7058a3;
+}
+/*ise,ize, ization等*/
+	.nataccep .he {
+	color: inherit;
+}
+sup {
+	font-size: 9px;
+	vertical-align: super;
+}
+.pos {
+	font-family: Lucida Sans Unicode, sans-serif;
+	font-size: 13px;
+	color: royalblue }
+/* 词类条，比如名词，动词，包括曲折等*/
+	.cixing {
+	font-size: 13px;
+	font-weight: bold;
+	font-family: Verdana, sans-serif;
+	text-transform: uppercase;
+	color: #303030;
+	font-style: normal;
+	padding-right: 3px }
+/* 词类，比如名词，动词*/
+	.infn {
+	color: lightslategrey;
+	font-family: Verdana, sans-serif;
+	font-size: 13px;
+	font-style: italic;
+	font-weight: bold;
+}
+/*形态名称，比如比较级*/
+	.if {
+	color: royalblue;
+	font-family: Lucida Sans Unicode, sans-serif;
+	font-size: 13px;
+	font-style: normal;
+	font-weight: bold;
+	padding-left: 4px;
+}
+/*形态*/
+	.nataccep .if {
+	font-size: inherit;
+}
+.grampat {
+	font-family: Arial Unicode MS, sans-serif;
+	color: slategrey;
+}
+/*斜体用法说明，比如especially BrE, BrE, infml*/
+	.grampat i {
+	font-family: Georgia, serif;
+	color: slategrey;
+	font-style: italic;
+}
+.gx {
+	font-family: Georgia, serif;
+	color: slategrey;
+	font-style: italic;
+}
+/*斜体用法说明，比如especially BrE, BrE, infml*/
+	.gc {
+	font-family: Arial Unicode MS, sans-serif;
+	color: slategrey;
+}
+/*用法说明，比如【英】*/
+	.phon {
+	font-family: "Lucida Sans Unicode" , sans-serif ;
+	font-size: 15px ;
+	color: #714C99 ;
+	font-style: normal;
+	text-decoration: none;
+	padding-left: 2px;
+	padding-right: 2px;
+	font-weight: normal
+}
+.des {
+	font-size: 16px ;
+	font-style: normal ;
+	font-weight: normal;
+	font-family: Segoe UI, Lucida Grande, Lucida Sans, Roboto, Droid Sans Mono, Droid Sans, sans-serif;
+	color: #1171B2;
+	display: block;
+}
+/*词条说明部分，很少用到*/
+	.define {
+	display: block;
+	margin-top: 6px;
+	margin-bottom: 5px;
+	color: #2E55bF;
+	border-top-style: solid;
+	border-top-width: 1px;
+	border-top-color: #d1d1d1;
+	padding-top: 3px;
+}
+.sign {
+	display: block;
+	color: rgb(116,75,152);
+	background-color: #fcfcfc;
+	font-family: Microsoft Yahei, STHeiti, sans-serif;
+	box-shadow: 0 3px #f8f8f8;
+}
+/*词义分组条*/
+	span.sign b {
+	font-family: Segoe UI, Lucida Sans Unicode, sans-serif }
+.nataccep {
+	font-size: 16px ;
+	font-style: normal ;
+	font-weight: normal;
+	font-family: Segoe UI, Lucida Grande, Lucida Sans, Roboto, Droid Sans Mono, Droid Sans, sans-serif;
+	color: #1171B2;
+	display: block;
+	padding-left: 16px;
+}
+/*释义块*/
+	.chn {
+	font-family: Microsoft Yahei, STHeiti, sans-serif;
+}
+div.define>div.nataccep {
+	padding-left: 0
+}
+span.num+div.nataccep {
+	display: inline;
+	padding-left: 0
+}
+/*数字编号后面，则行内*/
+	.num {
+	font-weight: bold;
+	padding-right: 7.5px;
+	font-size: 15px;
+	color: #2E55bF;
+}
+/* 释义编号*/
+	.alp {
+	font-weight: bold;
+	padding-right: 7.5px;
+	font-size: 13px;
+	padding-left: 16px;
+}
+/* 字母编号*/
+	.alp_a {
+	font-weight: bold;
+	padding-right: 7.5px;
+	font-size: 13px;
+}
+/* 字母a编号*/
+	span.num+div.nataccep+span.alp {
+	padding-left: 0
+}
+div.nataccep+div.nataccep+span.alp_a {
+	padding-left: 16px;
+}
+.warning {
+	color: red;
+	font-family: Lucida Sans Unicode, sans-serif;
+	display: none;
+}
+/*警告十字*/
+	.warning+.nataccep {
+	background-color: #e9dfe5;
+}
+.example {
+	display: block;
+	margin-top: 3px;
+	margin-bottom: 1px;
+	font-size: 15px;
+	color: #303030;
+	padding-left: 16px;
+}
+/*例句块*/
+	.xe {
+	font-size: 15px ;
+	color: #454545 ;
+	font-weight: normal;
+	font-family: Segoe UI, Lucida Grande, Lucida Sans, Roboto, Droid Sans Mono, Droid Sans, sans-serif;
+	font-style: italic;
+}
+/*英文例句*/
+	.xc {
+	font-size: 15px ;
+	color: #454545 ;
+	font-weight: normal;
+	font-family: Microsoft Yahei, STHeiti, sans-serif;
+	font-style: normal;
+}
+/*中文例句*/
+	.xe i {
+	font-weight: bold;
+}
+.phrase {
+	display: block;
+}
+/*例句前的搭配句子短语，比如cutting*/
+	.plus {
+	display: block;
+	padding-right: 3px;
+}
+/*[方框搭配]*/
+	.phrasedesc {
+	font-style: inherit;
+	font-family: serif;
+	color: #301530;
+	padding-left: 3px;
+	padding-right: 4px
+}
+/*例句搭配的解释*/
+	.pc {
+	font-family: Microsoft Yahei, STHeiti, sans-serif;
+	font-style: normal;
+}
+/*搭配句子短语的中文*/
+	.refgrp {
+	font-size: 15px ;
+	font-style: normal ;
+	font-weight: normal;
+	display: block;
+	padding-left: 16px;
+}
+/* see also之类*/
+	.focuslist {
+	display: block;
+	margin-top: 3px;
+	margin-bottom: 1px;
+	font-size: 15px;
+	color: #303030;
+	padding-left: 16px;
+	font-family: Microsoft Yahei, STHeiti, sans-serif;
+}
+/*word focus单词列举块*/
+	.focuslist b {
+	font-family: Segoe UI, Lucida Grande, Lucida Sans, Roboto, Droid Sans Mono, Droid Sans, sans-serif;
+}
+.deri {
+	display: block;
+	margin-top: 6px;
+	border-top: solid 1px #ebe0f6;
+	background-color: #fcfdfe;
+}
+/*派生词块*/
+	.deri_hw {
+	font-family: Segoe UI, Lucida Grande, Lucida Sans, Roboto, Droid Sans Mono, Droid Sans, sans-serif;
+	font-weight: bold;
+	color: #674196;
+}
+/*派生词词头词*/
+	.xlink_hw {
+	text-decoration: none;
+	color: inherit;
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+}
+.xlink_annex_pic {
+	background: -moz-linear-gradient(left,red,orange,yellow, green,blue,indigo,Purple);
+	background: -o-linear-gradient(left,red,orange,yellow, green,blue,indigo,Purple);
+	background: -webkit-linear-gradient(left,red,orange,yellow, green,blue,indigo,Purple);
+	text-decoration: none;
+	color: inherit;
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+}
+/*附录图片链接*/
+	.xlink_image {
+	text-decoration: none;
+	color: inherit;
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	background-color: #FA9CB8
+}
+/*正文图片链接*/
+	.xlink_image:hover {
+	color: red
+}
+.xlink_annex_pic:hover {
+	color: red
+}
+div.example a {
+	text-decoration: none;
+	color: #303030;
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+}
+.xlink_hw:hover {
+	color: red }
+.synonym {
+	text-decoration: none;
+	font-size: 15px;
+	font-family: Segoe UI, sans-serif
+}
+.antonym {
+	text-decoration: none;
+	font-size: 15px;
+	font-family: Segoe UI, sans-serif;
+}
+/*反义词*/
+.ex_coll {
+	display: block
+}
+/*例句前的搭配方式，比如fit词条的for，方括号之内*/
+.ex_expr {
+
+	}
+/*例句前的搭配句子短语，比如cutting*/
+	div.example>i {
+	font-family: Segoe UI, sans-serif
+}
+.collocation {
+	display: block;
+	margin-bottom: 1px;
+	font-size: 15px;
+	color: #303030;
+	background-color: inherit;
+	padding-left: 16px;
+}
+/*搭配例句块，比如favour*/
+	.coc {
+	font-family: Microsoft Yahei, STHeiti, sans-serif;
+	font-style: normal;
+}
+/*搭配例句的中文*/
+	.box {
+	border-style: dotted;
+	border-width: thin;
+	border-color: #FA9CB8;
+	background-color:#fff3f5;
+}
+/*短语方框*/
+	div.box div.define {
+	border-top-color: #FA9CB8;
+	border-top-style: dashed;
+}
+div.box b {
+	color: #0055aa;
+	font-family: Segoe UI, sans-serif }
+div.box b a {
+	color: #0055aa;
+	font-family: Segoe UI, sans-serif ;
+	text-decoration: none;
+}
+.sym_syn {
+	background-color:#007BC3;
+	color:white;
+	font-size:13px;
+	font-weight:bold;
+	margin-left: 3px;
+	margin-right: 3px;
+	padding-left: 1px;
+	padding-right: 1px;
+	font-family: Microsoft Yahei, sans-serif
+}
+/*同义词标签*/
+	.sym_opp {
+	background-color:#DA508F;
+	color:white;
+	font-size:13px;
+	font-weight:bold;
+	margin-left: 3px;
+	margin-right: 3px;
+	padding-left: 1px;
+	padding-right: 1px;
+	font-family: Microsoft Yahei, sans-serif
+}
+/*反义词标签*/
+	.sym_ref {
+	background-color:#0099ee;
+	color:white;
+	font-size:13px;
+	font-weight:bold;
+	margin-left: 3px;
+	margin-right: 3px;
+	padding-left: 1px;
+	padding-right: 1px;
+	font-family: Microsoft Yahei, sans-serif }
+/*ref标签*/
+	.sym_phv {
+	background-color: rgb(236, 150, 152);
+	color: white;
+	font-size:13px;
+	font-weight:bold;
+	margin-left: 6px;
+	margin-right: 6px;
+	padding-left: 1px;
+	padding-right: 1px;
+	font-family: Microsoft Yahei, sans-serif;
+}
+/*动词短语标签*/
+	.phrgrp {
+	display: block;
+	color: #2E55bF;
+	border-style: solid;
+	border-width: 1px;
+	border-color: seashell;
+	margin-top: 6px;
+}
+/*动词短语格*/
+	.phrgrp .define {
+	border-top-color:rgb(236, 69, 74);
+	border-top-style: dotted;
+}
+.phrhw {
+	font-size: 16px ;
+	font-weight: bold;
+	font-weight: 700;
+	color: rgb(236, 69, 74);
+	font-style: normal;
+	font-family: Lucida Sans Unicode, Lucida Grande, sans-serif;
+}
+/*动词短语*/
+	.phv {
+	font-size: 16px ;
+	font-weight: bold;
+	font-weight: 700;
+	color: rgb(236, 69, 74);
+	font-style: normal;
+	font-family: Lucida Sans Unicode, Lucida Grande, sans-serif;
+}
+/*动词短语*/
+	.chart_pic {
+	border: 0
+}
+/*图片，图片id均为Pic_词条名*/
+	.chart_b {
+	display: block;
+	margin-top: 3px;
+}
+/*图片块*/
+	.chart_c {
+	display: none;
+}
+/*使用频率块，一般不显示*/
+	.doarrow {
+	font-family: Lucida Sans Unicode, Lucida Grande, Lucida Sans, Roboto, Droid Sans Mono, Droid Sans, sans-serif;
+	padding-right: 4px;
+}

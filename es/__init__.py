@@ -21,11 +21,11 @@ def search_han_examples(word: str) -> str:
         }
     }
     res = config.esClient.search(index=config.INDEX, body=dsl)
-    examples_html = """<strong>朗文4相关例句</strong><link rel="stylesheet" type="text/css" href="LSC4.css">"""
+    examples_html = """<strong>朗文当代4相关例句</strong><link rel="stylesheet" type="text/css" href="LSC4.css">"""
     if res["hits"]["total"] > 0:
         hits = res["hits"]["hits"]
         for hit in hits:
-            one_example_html = hit["_source"]["html"]
+            one_example_html = hit["_source"]["templates"]
             examples_html += '<span class="example">' + one_example_html + '</span>'
         return examples_html
     return ''

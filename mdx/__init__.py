@@ -5,7 +5,7 @@ import inflect
 from spellchecker import SpellChecker
 
 from mdx.config import MdxIndexBuilders
-from mdx.mdict_query import IndexBuilder
+from mdx.index_builder import IndexBuilder
 
 sing = inflect.engine()  # 单复数转换
 spellchecker = SpellChecker()  # 拼写纠正

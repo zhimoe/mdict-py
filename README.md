@@ -37,7 +37,7 @@ python app.py
 # 启动一个es container
 docker run -d --name elasticsearch --net host -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:6.8.18
 # 进入刚才的container 下载插件并解压到plugins
-docker exec -it ff50bb5b1939 /bin/bash
+docker exec -it 0811299abed4ed5844 /bin/bash
 mkdir ik && cd ik && wget https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.8.18/elasticsearch-analysis-ik-6.8.18.zip
 unzip elasticsearch-analysis-ik-6.8.18.zip
 cd .. && mv ik plugins

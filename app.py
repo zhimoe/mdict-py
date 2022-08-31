@@ -1,8 +1,8 @@
-from flask import Flask, url_for, render_template
+from flask import Flask, render_template
 from flask import request
 
-from query import qry_mdx_def
 from lucky import get_random_word
+from query import qry_mdx_def
 
 app = Flask(__name__,
             static_url_path='',

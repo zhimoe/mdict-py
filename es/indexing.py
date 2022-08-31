@@ -21,7 +21,7 @@ def example_parse_lsc4(word: str, html: str) -> List[Tuple[str, str, str, str]]:
     if not html:
         return result
 
-    bs = BeautifulSoup(html, "templates.parser")
+    bs = BeautifulSoup(html, "html.parser")
     examples = bs.find_all('span', attrs={'class': "example"})
     for html in examples:
         try:
