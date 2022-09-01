@@ -78,6 +78,19 @@ $(document).on('click', '#lucky-btn', function (e) {
             } else {
                 $('#mdx-resp').hide();
             }
+            $('#word').val(parserWordFromResp(data))
         }
     });
 });
+
+function parserWordFromResp(data) {
+    let el = document.createElement('html');
+    el.innerHTML = data;
+    let topg = el.getElementsByClassName("top-g")[0]
+    if (topg == null) {
+        console.log("top-g is null");
+        return "";
+    }
+    let word = topg.firstElementChild.innerHTML
+    return word;
+}
