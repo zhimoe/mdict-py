@@ -1,4 +1,4 @@
-FROM python-3.9.12:latest
+FROM python-3.10:latest
 
 COPY ./ /opt/
 

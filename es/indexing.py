@@ -29,8 +29,12 @@ def example_parse_lsc4(word: str, html: str) -> List[Tuple[str, str, str, str]]:
             han = html.next.nextSibling.text
             result.append((word, en, han, html.encode_contents().decode()))
         except AttributeError:
-            """some example has no next element"""
-            print(f"this example is not on rule")
+            if html.has_attr('toolskip'):
+                en = html.text
+                han = html.text
+                result.append((word, en, han, html.encode_contents().decode()))
+            else:
+                print(f"### wrong element: {html}")
     return result
 
 
@@ -55,7 +59,6 @@ def ingest(dict_name: str, examples: List[Tuple[str, str, str, str]]) -> int:
         }
         body = {
             "_index": INDEX,
-            "_type": "doc",
             "_source": source,
             "_id": dict_name + "-" + word + "-" + re.sub(r'\W+', '', en)
         }
@@ -99,12 +102,12 @@ def es_indexing(builder) -> int:
 def create_index() -> bool:
     """创建index"""
     if esClient.indices.exists(INDEX):
-        print(f"the index {INDEX} already exists,indexing skipped")
+        print(f">>>the index {INDEX} already exists,indexing skipped")
         return False
     mappings = {
         "settings": {
             "index": {
-                "number_of_shards": 2,
+                "number_of_shards": 1,
                 "number_of_replicas": 1
             },
             "analysis": {
@@ -119,23 +122,23 @@ def create_index() -> bool:
             }
         },
         "mappings": {
-            "doc": {
-                "properties": {
-                    "dict": {
-                        "type": "keyword"
-                    },
-                    "en": {
-                        "type": "text"
-                    },
-                    "han": {
-                        "type": "text"
-                    },
-                    "templates": {
-                        "type": "text"
-                    }
+            "properties": {
+                "dict": {
+                    "type": "keyword"
+                },
+                "en": {
+                    "type": "text"
+                },
+                "han": {
+                    "type": "text"
+                },
+                "templates": {
+                    "type": "text"
                 }
             }
         }
     }
 
-    return esClient.indices.create(index=INDEX, body=mappings)
+    resp = esClient.indices.create(index=INDEX, body=mappings)
+    print(">>>ES mapping created")
+    return resp

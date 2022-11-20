@@ -13,5 +13,7 @@ if Config["ES"]["Enable"] == "true":
     try:
         if esClient.ping():
             ES_ENABLED = True
+            print(">>>connected ES...")
     except:
+        print(">>>try connect to ES failed, disabled ES...")
         ES_ENABLED = False

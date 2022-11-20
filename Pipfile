@@ -6,7 +6,7 @@ name = "tsinghua"
 [packages]
 inflect = "==4.1.0"
 pyspellchecker = "==0.5.5"
-elasticsearch6 = "==6.8.2"
+elasticsearch7 = "==7.17.7"
 beautifulsoup4 = "==4.9.1"
 jinja2 = "==2.11.2"
 flask = "*"

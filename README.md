@@ -35,17 +35,20 @@ python app.py
 #### es docker使用
 ```bash
 # 启动一个es container
-docker run -d --name elasticsearch --net host -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:6.8.18
+docker run -d --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.17.1
+
 # 进入刚才的container 下载插件并解压到plugins
-docker exec -it 0811299abed4ed5844 /bin/bash
-mkdir ik && cd ik && wget https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v6.8.18/elasticsearch-analysis-ik-6.8.18.zip
-unzip elasticsearch-analysis-ik-6.8.18.zip
-cd .. && mv ik plugins
+docker exec -it bb228a8a4925 /bin/bash
+mkdir ik && cd ik
+curl -LJO https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.17.1/elasticsearch-analysis-ik-7.17.1.zip
+unzip *.zip && cd .. && mv ik plugins
+exit
+
 # 退出重启container
 docker restart elasticsearch
 
 #可以使用cerebro查看es
-docker run --name cerebro -e CEREBRO_PORT=9001 -p 9001:9001 --network=host lmenezes/cerebro
+docker run --name cerebro -e CEREBRO_PORT=9001 -p 9001:9001 lmenezes/cerebro
 ```
 
 ### Dockerfile
