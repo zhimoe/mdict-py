@@ -16,12 +16,13 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
-
+from enum import Enum, unique
 from struct import pack, unpack
 from io import BytesIO
 import re
 import sys
 import json
+from typing import Dict
 
 from mdx.utils.ripemd128 import ripemd128
 from mdx.utils.pureSalsa20 import Salsa20
@@ -39,6 +40,19 @@ except ImportError:
 # 2x3 compatible
 if sys.hexversion >= 0x03000000:
     unicode = str
+
+
+@unique
+class NumberFmt(str, Enum):
+    """
+    python struct.unpack format, reference: https://docs.python.org/3/library/struct.html
+    """
+    be_uint = '>I'
+    be_ulonglong = '>Q'
+    be_ushort = '>H'
+    be_uchar = '>B'
+    le_uint = '<I'
+    le_ulonglong = '<Q'
 
 
 def _unescape_entities(text):
@@ -88,6 +102,17 @@ def _decrypt_regcode_by_email(reg_code, email):
     return encrypt_key
 
 
+def _parse_header(header) -> Dict[str, str]:
+    """
+    extract attributes from <Dict attr="value" ... >
+    """
+    tag_list = re.findall(b'(\w+)="(.*?)"', header, re.DOTALL)
+    tag_dict = {}
+    for k, v in tag_list:
+        tag_dict[k] = _unescape_entities(v)
+    return tag_dict
+
+
 class MDict(object):
     """
     Base class which reads in header and key block.
@@ -121,16 +146,6 @@ class MDict(object):
     def _read_number(self, f):
         return unpack(self._number_format, f.read(self._number_width))[0]
 
-    def _parse_header(self, header):
-        """
-        extract attributes from <Dict attr="value" ... >
-        """
-        taglist = re.findall(b'(\w+)="(.*?)"', header, re.DOTALL)
-        tagdict = {}
-        for key, value in taglist:
-            tagdict[key] = _unescape_entities(value)
-        return tagdict
-
     def _decode_key_block_info(self, key_block_info_compressed):
         if self._version >= 2:
             # zlib compression
@@ -141,7 +156,7 @@ class MDict(object):
             # decompress
             key_block_info = zlib.decompress(key_block_info_compressed[8:])
             # adler checksum
-            adler32 = unpack('>I', key_block_info_compressed[4:8])[0]
+            adler32 = unpack(NumberFmt.be_uint, key_block_info_compressed[4:8])[0]
             assert (adler32 == zlib.adler32(key_block_info) & 0xffffffff)
         else:
             # no compression
@@ -151,11 +166,11 @@ class MDict(object):
         num_entries = 0
         i = 0
         if self._version >= 2:
-            byte_format = '>H'
+            byte_format = NumberFmt.be_ushort
             byte_width = 2
             text_term = 1
         else:
-            byte_format = '>B'
+            byte_format = NumberFmt.be_uchar
             byte_width = 1
             text_term = 0
 
@@ -200,7 +215,7 @@ class MDict(object):
             # 4 bytes : compression type
             key_block_type = key_block_compressed[start:start + 4]
             # 4 bytes : adler checksum of decompressed key block
-            adler32 = unpack('>I', key_block_compressed[start + 4:start + 8])[0]
+            adler32 = unpack(NumberFmt.be_uint, key_block_compressed[start + 4:start + 8])[0]
             if key_block_type == b'\x00\x00\x00\x00':
                 key_block = key_block_compressed[start + 8:end]
             elif key_block_type == b'\x01\x00\x00\x00':
@@ -208,7 +223,7 @@ class MDict(object):
                     print("LZO compression is not supported")
                     break
                 # decompress key block
-                header = b'\xf0' + pack('>I', decompressed_size)
+                header = b'\xf0' + pack(NumberFmt.be_uint, decompressed_size)
                 key_block = lzo.decompress(key_block_compressed[start + 8:end], initSize=decompressed_size,
                                            blockSize=1308672)
             elif key_block_type == b'\x02\x00\x00\x00':
@@ -250,11 +265,11 @@ class MDict(object):
 
     def _read_header(self):
         f = open(self._fname, 'rb')
-        # number of bytes of header text
-        header_bytes_size = unpack('>I', f.read(4))[0]
+        # number of bytes of header text >:big endian,I:unsigned int
+        header_bytes_size = unpack(NumberFmt.be_uint, f.read(4))[0]
         header_bytes = f.read(header_bytes_size)
         # 4 bytes: adler32 checksum of header, in little endian
-        adler32 = unpack('<I', f.read(4))[0]
+        adler32 = unpack(NumberFmt.le_uint, f.read(4))[0]
         assert (adler32 == zlib.adler32(header_bytes) & 0xffffffff)
         # mark down key block offset
         self._key_block_offset = f.tell()
@@ -262,7 +277,7 @@ class MDict(object):
 
         # header text in utf-16 encoding ending with '\x00\x00'
         header_text = header_bytes[:-2].decode('utf-16').encode('utf-8')
-        header_tag = self._parse_header(header_text)
+        header_tag = _parse_header(header_text)
         if not self._encoding:
             encoding = header_tag[b'Encoding']
             if sys.hexversion >= 0x03000000:
@@ -310,10 +325,10 @@ class MDict(object):
         self._version = float(header_tag[b'GeneratedByEngineVersion'])
         if self._version < 2.0:
             self._number_width = 4
-            self._number_format = '>I'
+            self._number_format = NumberFmt.be_uint
         else:
             self._number_width = 8
-            self._number_format = '>Q'
+            self._number_format = NumberFmt.be_ulonglong
 
         return header_tag
 
@@ -356,7 +371,7 @@ class MDict(object):
 
         # 4 bytes: adler checksum of previous 5 numbers
         if self._version >= 2.0:
-            adler32 = unpack('>I', f.read(4))[0]
+            adler32 = unpack(NumberFmt.be_uint, f.read(4))[0]
             assert adler32 == (zlib.adler32(block) & 0xffffffff)
 
         # read key block info, which indicates key block's compressed and
@@ -469,7 +484,7 @@ class MDD(MDict):
             # 4 bytes: compression type
             record_block_type = record_block_compressed[:4]
             # 4 bytes: adler32 checksum of decompressed record block
-            adler32 = unpack('>I', record_block_compressed[4:8])[0]
+            adler32 = unpack(NumberFmt.be_uint, record_block_compressed[4:8])[0]
             if record_block_type == b'\x00\x00\x00\x00':
                 record_block = record_block_compressed[8:]
             elif record_block_type == b'\x01\x00\x00\x00':
@@ -477,7 +492,7 @@ class MDD(MDict):
                     print("LZO compression is not supported")
                     break
                 # decompress
-                header = b'\xf0' + pack('>I', decompressed_size)
+                header = b'\xf0' + pack(NumberFmt.be_uint, decompressed_size)
                 record_block = lzo.decompress(record_block_compressed[start + 8:end], initSize=decompressed_size,
                                               blockSize=1308672)
             elif record_block_type == b'\x02\x00\x00\x00':
@@ -550,7 +565,7 @@ class MDD(MDict):
             # 4 bytes: compression type
             record_block_type = record_block_compressed[:4]
             # 4 bytes: adler32 checksum of decompressed record block
-            adler32 = unpack('>I', record_block_compressed[4:8])[0]
+            adler32 = unpack(NumberFmt.be_uint, record_block_compressed[4:8])[0]
             if record_block_type == b'\x00\x00\x00\x00':
                 _type = 0
                 if check_block:
@@ -561,7 +576,7 @@ class MDD(MDict):
                     print("LZO compression is not supported")
                     break
                 # decompress
-                header = b'\xf0' + pack('>I', decompressed_size)
+                header = b'\xf0' + pack(NumberFmt.be_uint, decompressed_size)
                 if check_block:
                     record_block = lzo.decompress(record_block_compressed[start + 8:end], initSize=decompressed_size,
                                                   blockSize=1308672)
@@ -681,7 +696,7 @@ class MDX(MDict):
             # 4 bytes indicates block compression type
             record_block_type = record_block_compressed[:4]
             # 4 bytes adler checksum of uncompressed content
-            adler32 = unpack('>I', record_block_compressed[4:8])[0]
+            adler32 = unpack(NumberFmt.be_uint, record_block_compressed[4:8])[0]
             # no compression
             if record_block_type == b'\x00\x00\x00\x00':
                 record_block = record_block_compressed[8:]
@@ -691,7 +706,7 @@ class MDX(MDict):
                     print("LZO compression is not supported")
                     break
                 # decompress
-                header = b'\xf0' + pack('>I', decompressed_size)
+                header = b'\xf0' + pack(NumberFmt.be_uint, decompressed_size)
                 record_block = lzo.decompress(record_block_compressed[8:], initSize=decompressed_size,
                                               blockSize=1308672)
             # zlib compression
@@ -790,7 +805,7 @@ class MDX(MDict):
             # 4 bytes indicates block compression type
             record_block_type = record_block_compressed[:4]
             # 4 bytes adler checksum of uncompressed content
-            adler32 = unpack('>I', record_block_compressed[4:8])[0]
+            adler32 = unpack(NumberFmt.be_uint, record_block_compressed[4:8])[0]
             # no compression
             if record_block_type == b'\x00\x00\x00\x00':
                 _type = 0
@@ -802,7 +817,7 @@ class MDX(MDict):
                     print("LZO compression is not supported")
                     break
                 # decompress
-                header = b'\xf0' + pack('>I', decompressed_size)
+                header = b'\xf0' + pack(NumberFmt.be_uint, decompressed_size)
                 if check_block:
                     record_block = lzo.decompress(record_block_compressed[8:], initSize=decompressed_size,
                                                   blockSize=1308672)
