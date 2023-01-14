@@ -91,6 +91,7 @@ function parserWordFromResp(data) {
         console.log("top-g is null");
         return "";
     }
-    let word = topg.firstElementChild.innerHTML
-    return word;
+
+    return topg.firstElementChild.innerHTML.split('·').join('')
+
 }
