@@ -4,8 +4,8 @@ from typing import List
 import inflect
 from spellchecker import SpellChecker
 
-from mdx.config import MdxIndexBuilders
-from mdx.mdict_db import MdictDb
+from mdict.config import MdxIndexBuilders
+from mdict.mdict_db import MdictDb
 
 sing = inflect.engine()  # 单复数转换
 spellchecker = SpellChecker()  # 拼写纠正

@@ -3,7 +3,7 @@
 import logging
 import os
 
-from mdx.mdict_db import MdictDb
+from mdict.mdict_db import MdictDb
 
 log = logging.getLogger("Mdict")
 logging.basicConfig(level=logging.INFO)

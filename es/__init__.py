@@ -1,6 +1,6 @@
 import es.config as config
 from es.indexing import es_indexing
-from mdx import MdxIndexBuilders
+from mdict import MdxIndexBuilders
 
 import logging
 

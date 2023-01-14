@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # read_mdict.py
-# Octopus MDict Dictionary File (.mdx) and Resource File (.mdd) Analyser
+# Octopus MDict Dictionary File (.mdict) and Resource File (.mdd) Analyser
 #
 # Copyright (C) 2012, 2013, 2015 Xiaoqiang Wang <xiaoqiangwang AT gmail DOT com>
 #
@@ -24,15 +24,15 @@ import sys
 import json
 from typing import Dict
 
-from mdx.utils.ripemd128 import ripemd128
-from mdx.utils.pureSalsa20 import Salsa20
+from mdict.utils.ripemd128 import ripemd128
+from mdict.utils.pureSalsa20 import Salsa20
 
 # zlib compression is used for engine version >=2.0
 import zlib
 
 # LZO compression is used for engine version < 2.0
 try:
-    from mdx.utils import lzo
+    from mdict.utils import lzo
 except ImportError:
     lzo = None
     print("LZO compression support is not available")
@@ -523,7 +523,7 @@ class MDD(MDict):
 
         f.close()
 
-        ### 获取 mdx 文件的索引列表，格式为
+        ### 获取 mdict 文件的索引列表，格式为
         ###  key_text(关键词，可以由后面的 keylist 得到)
         ###  file_pos(record_block开始的位置)
         ###  compressed_size(record_block压缩前的大小)
@@ -626,10 +626,10 @@ class MDD(MDict):
 class MDX(MDict):
     """
     MDict dictionary file format (*.MDD) reader.
-    >>> mdx = MDX('example.mdx')
-    >>> len(mdx)
+    >>> mdict = MDX('example.mdict')
+    >>> len(mdict)
     42481
-    >>> for key,value in mdx.items():
+    >>> for key,value in mdict.items():
     ... print key, value[:10]
     """
 
@@ -750,7 +750,7 @@ class MDX(MDict):
 
         f.close()
 
-    ### 获取 mdx 文件的索引列表，格式为
+    ### 获取 mdict 文件的索引列表，格式为
     ###  key_text(关键词，可以由后面的 keylist 得到)
     ###  file_pos(record_block开始的位置)
     ###  compressed_size(record_block压缩前的大小)
@@ -906,7 +906,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-x', '--extract', action="store_true",
-                        help='extract mdx to source format and extract files from mdd')
+                        help='extract mdict to source format and extract files from mdd')
     parser.add_argument('-s', '--substyle', action="store_true",
                         help='substitute style definition if present')
     parser.add_argument('-d', '--datafolder', default="data",
@@ -915,7 +915,7 @@ if __name__ == '__main__':
                         help='folder to extract data files from mdd')
     parser.add_argument('-p', '--passcode', default=None, type=passcode,
                         help='register_code,email_or_deviceid')
-    parser.add_argument("filename", nargs='?', help="mdx file name")
+    parser.add_argument("filename", nargs='?', help="mdict file name")
     args = parser.parse_args()
 
     # use GUI to select file, default to extract
@@ -933,8 +933,8 @@ if __name__ == '__main__':
 
     base, ext = os.path.splitext(args.filename)
 
-    # read mdx file
-    if ext.lower() == os.path.extsep + 'mdx':
+    # read mdict file
+    if ext.lower() == os.path.extsep + 'mdict':
         mdx = MDX(args.filename, args.encoding, args.substyle, args.passcode)
         if type(args.filename) is unicode:
             bfname = args.filename.encode('utf-8')

@@ -1,5 +1,5 @@
 from es import search_han_examples
-from mdx import get_definition_mdx
+from mdict import get_definition_mdx
 
 
 def qry_mdx_def(text: str) -> str:

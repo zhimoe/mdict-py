@@ -9,11 +9,11 @@ import sys
 import zlib
 from struct import pack
 
-from mdx.read_mdict import MDX, MDD
+from mdict.read_mdict import MDX, MDD
 
 # LZO compression is used for engine version < 2.0
 try:
-    from mdx.utils import lzo
+    from mdict.utils import lzo
 except ImportError:
     lzo = None
     print("LZO compression support is not available")
@@ -57,7 +57,7 @@ class MdictDb(object):
                 print("version info not found")
                 conn.close()
                 self._make_mdx_index(self._mdx_db)
-                print("mdx.db rebuilt!")
+                print("mdict.db rebuilt!")
                 if os.path.isfile(_filename + '.mdd'):
                     self._mdd_file = _filename + ".mdd"
                     self._mdd_db = _filename + ".mdd.db"
@@ -331,7 +331,7 @@ class MdictDb(object):
     def get_mdx_db(self):
         return self._mdx_db
 
-# mdx_builder = IndexBuilder("oald.mdx")
+# mdx_builder = IndexBuilder("oald.mdict")
 # text = mdx_builder.mdx_lookup('dedication')
 # keys = mdx_builder.get_mdx_keys()
 # keys1 = mdx_builder.get_mdx_keys('abstrac')
