@@ -1,15 +1,22 @@
-from bs4 import BeautifulSoup
-from flask import Flask, render_template
-from flask import request
+import sys
+
+from flask import Flask, render_template, request
 
 from lucky import get_random_word
 from query import qry_mdx_def
+import logging
+
 
 app = Flask(__name__,
             static_url_path='',
             static_folder='resources/static',
             template_folder='resources/templates'
             )
+
+log = logging.getLogger("MoeDictApp")
+logging.basicConfig(level=logging.INFO)
+app.logger.propagate = False
+log.propagate = False
 
 
 @app.route('/')
@@ -20,14 +27,14 @@ def index():
 @app.route("/query", methods=['POST'])
 def query():
     word = request.form.get("word")
-    print(f"mdx query for={word}")
+    log.info(f">>>mdx query for={word}")
     return qry_mdx_def(word)
 
 
 @app.route("/lucky", methods=['GET'])
 def feeling_lucky():
     word = get_random_word()
-    print(f"mdx query for={word}")
+    log.info(f"mdx query for={word}")
     return qry_mdx_def(word)
 
 
@@ -35,6 +42,5 @@ if __name__ == '__main__':
     """
     阅读readme和config.ini
     """
-    app.run(debug=True, port=5000)
-
-
+    log.info(">>> flask app running...")
+    app.run(debug=False, port=5000)

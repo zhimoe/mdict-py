@@ -1,3 +1,4 @@
+import logging
 import re
 import sqlite3
 from typing import Tuple, List
@@ -6,6 +7,9 @@ from bs4 import BeautifulSoup
 from elasticsearch6 import helpers
 
 from es.config import INDEX, esClient
+
+log = logging.getLogger("Elasticsearch")
+logging.basicConfig(level=logging.INFO)
 
 
 def example_parse_o8c(dict_name: str, word: str, html: str) -> Tuple[str, str, str]:
@@ -34,7 +38,7 @@ def example_parse_lsc4(word: str, html: str) -> List[Tuple[str, str, str, str]]:
                 han = html.text
                 result.append((word, en, han, html.encode_contents().decode()))
             else:
-                print(f"### wrong element: {html}")
+                log.info(f">>>wrong element: {html}")
     return result
 
 
@@ -75,7 +79,7 @@ def es_indexing(builder) -> int:
     # create index
     if not create_index():
         return 0
-    print("es is connected and index created succeed, starting indexing the examples...")
+    log.info("es is connected and index created succeed, starting indexing the examples...")
     conn = sqlite3.connect(builder.get_mdx_db())
     cursor = conn.execute('SELECT key_text FROM MDX_INDEX')
     keys = [item[0] for item in cursor]
@@ -96,13 +100,13 @@ def es_indexing(builder) -> int:
                 ingest("lsc4", examples)
                 examples = []
     ingest("lsc4", examples)
-    print("indexing done", len(keys))
+    log.info(">>>indexing done", len(keys))
 
 
 def create_index() -> bool:
     """创建index"""
     if esClient.indices.exists(INDEX):
-        print(f">>>the index {INDEX} already exists,indexing skipped")
+        log.info(f">>>the index {INDEX} already exists,indexing skipped")
         return False
     mappings = {
         "settings": {
@@ -140,5 +144,5 @@ def create_index() -> bool:
     }
 
     resp = esClient.indices.create(index=INDEX, body=mappings)
-    print(">>>ES mapping created")
+    log.info(">>>ES mapping created")
     return resp

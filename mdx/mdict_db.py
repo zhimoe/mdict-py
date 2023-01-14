@@ -9,7 +9,7 @@ import sys
 import zlib
 from struct import pack
 
-from mdx.readmdict import MDX, MDD
+from mdx.read_mdict import MDX, MDD
 
 # LZO compression is used for engine version < 2.0
 try:
@@ -18,14 +18,9 @@ except ImportError:
     lzo = None
     print("LZO compression support is not available")
 
-# 2x3 compatible
-if sys.hexversion >= 0x03000000:
-    unicode = str
-
 version = '1.1'
 
-
-class IndexBuilder(object):
+class MdictDb(object):
     # todo: enable history
     def __init__(self, fname, encoding="", passcode=None, force_rebuild=False, enable_history=False, sql_index=True,
                  check=False):

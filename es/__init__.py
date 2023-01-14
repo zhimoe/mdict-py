@@ -2,11 +2,16 @@ import es.config as config
 from es.indexing import es_indexing
 from mdx import MdxIndexBuilders
 
+import logging
+
+log = logging.getLogger("Elasticsearch")
+logging.basicConfig(level=logging.INFO)
+
 if config.ES_ENABLED:
-    print(">>>ES enabled, starting indexing the LSC4 chinese examples to es...")
+    log.info(">>>ES enabled, starting indexing the LSC4 chinese examples to es...")
     es_indexing(MdxIndexBuilders['LSC4'])
 else:
-    print(">>>ES disabled, indexing skipped...")
+    log.info(">>>ES disabled, indexing skipped...")
 
 
 def search_han_examples(word: str) -> str:

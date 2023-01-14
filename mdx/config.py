@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import logging as log
+import logging
 import os
 
-from mdx.index_builder import IndexBuilder
+from mdx.mdict_db import MdictDb
+
+log = logging.getLogger("Mdict")
+logging.basicConfig(level=logging.INFO)
 
 MdxIndexBuilders = dict()
 
@@ -17,6 +20,6 @@ for name, location in MdxDicts.items():
     if not os.path.exists(location):
         log.warning(f"the dict({name}) file:{location} doesn't exist, skipped")
         continue
-    _builder = IndexBuilder(location)
-    MdxIndexBuilders[name] = _builder
-log.info(f"all dictionaries= {MdxDicts} are indexed")
+    MdxIndexBuilders[name] = MdictDb(location)
+
+log.info(f">>>all dictionaries= {MdxDicts} are indexed")

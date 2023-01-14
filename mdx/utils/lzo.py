@@ -1,7 +1,7 @@
 import math
 
 
-class FlexBuffer():
+class FlexBuffer:
 
     def __init__(self):
 

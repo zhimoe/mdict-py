@@ -1,6 +1,10 @@
 import configparser
+import logging
 
 from elasticsearch6 import Elasticsearch
+
+log = logging.getLogger("Elasticsearch")
+logging.basicConfig(level=logging.INFO)
 
 Config = configparser.ConfigParser()
 Config.read("config.ini")
@@ -13,7 +17,7 @@ if Config["ES"]["Enable"] == "true":
     try:
         if esClient.ping():
             ES_ENABLED = True
-            print(">>>connected ES...")
+            log.info(">>>connected ES...")
     except:
-        print(">>>try connect to ES failed, disabled ES...")
+        log.error(">>>try connect to ES failed, disabled ES...")
         ES_ENABLED = False

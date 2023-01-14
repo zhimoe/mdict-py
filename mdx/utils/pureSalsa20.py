@@ -184,8 +184,7 @@ else:
 from struct import Struct
 
 little_u64 = Struct("<Q")  # little-endian 64-bit unsigned.
-#    Unpacks to a tuple of one element!
-
+#Unpacks to a tuple of one element!
 little16_i32 = Struct("<16i")  # 16 little-endian 32-bit signed ints.
 little4_i32 = Struct("<4i")  # 4 little-endian 32-bit signed ints.
 little2_i32 = Struct("<2i")  # 2 little-endian 32-bit signed ints.

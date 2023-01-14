@@ -5,7 +5,7 @@ import inflect
 from spellchecker import SpellChecker
 
 from mdx.config import MdxIndexBuilders
-from mdx.index_builder import IndexBuilder
+from mdx.mdict_db import MdictDb
 
 sing = inflect.engine()  # 单复数转换
 spellchecker = SpellChecker()  # 拼写纠正
@@ -64,7 +64,7 @@ def get_definition_mdx(word: str, dict_opt: str) -> str:
         return error_msg
 
 
-def get_definition_mdd(word: str, builder: IndexBuilder) -> List[str]:
+def get_definition_mdd(word: str, builder: MdictDb) -> List[str]:
     """根据关键字得到MDD词典的媒体 """
     word = word.replace("/", "\\")
     content = builder.mdd_lookup(word)
