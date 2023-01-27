@@ -4,7 +4,7 @@ from mdict import MdxIndexBuilders
 
 import logging
 
-log = logging.getLogger("Elasticsearch")
+log = logging.getLogger("ES")
 logging.basicConfig(level=logging.INFO)
 
 if config.ES_ENABLED:

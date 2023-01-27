@@ -3,7 +3,7 @@ import logging
 
 from elasticsearch6 import Elasticsearch
 
-log = logging.getLogger("Elasticsearch")
+log = logging.getLogger("ES")
 logging.basicConfig(level=logging.INFO)
 
 Config = configparser.ConfigParser()

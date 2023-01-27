@@ -8,7 +8,7 @@ from elasticsearch6 import helpers
 
 from es.config import INDEX, esClient
 
-log = logging.getLogger("Elasticsearch")
+log = logging.getLogger("ES")
 logging.basicConfig(level=logging.INFO)
 
 

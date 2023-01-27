@@ -1,11 +1,9 @@
-import sys
+import logging
 
 from flask import Flask, render_template, request
 
 from lucky import get_random_word
 from query import qry_mdx_def
-import logging
-
 
 app = Flask(__name__,
             static_url_path='',
@@ -13,7 +11,7 @@ app = Flask(__name__,
             template_folder='resources/templates'
             )
 
-log = logging.getLogger("MoeDictApp")
+log = logging.getLogger("App")
 logging.basicConfig(level=logging.INFO)
 app.logger.propagate = False
 log.propagate = False
