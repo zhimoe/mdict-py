@@ -86,8 +86,8 @@ $(document).on('click', '#lucky-btn', function (e) {
 function parserWordFromResp(data) {
     let el = document.createElement('html');
     el.innerHTML = data;
-    let topg = el.getElementsByClassName("top-g")[0]
-    if (topg == null) {
+    let top_g = el.getElementsByClassName("top-g")[0]
+    if (top_g == null) {
         console.log("top-g is null");
         return "";
     }
