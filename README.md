@@ -11,9 +11,9 @@ Mdict项目是一个糅合了MDX词典、ES例句搜索和AI模型翻译的多�
 ## 效果演示
 
 英文翻译
-![英文翻译](examples/en_example.png)
+![英文翻译](screenshots/en_example.png)
 中文翻译
-![中文翻译](examples/zh_example.png)
+![中文翻译](screenshots/zh_example.png)
 
 ## 感谢项目MDX Server 
 1. mdx解析
