@@ -6,7 +6,8 @@ from typing import Tuple, List
 from bs4 import BeautifulSoup
 from elasticsearch7 import helpers
 
-from es.config import INDEX, esClient
+from es.config import ExampleConst
+from es.config import esClient
 
 log = logging.getLogger("ES")
 logging.basicConfig(level=logging.INFO)
@@ -19,7 +20,7 @@ def example_parse_o8c(dict_name: str, word: str, html: str) -> Tuple[str, str, s
 
 def example_parse_lsc4(word: str, html: str) -> List[Tuple[str, str, str, str]]:
     """朗文4词典
-    :return:(word,en,han,templates)
+    :return:(word,en,zh,templates)
     """
     result = []
     if not html:
@@ -30,41 +31,41 @@ def example_parse_lsc4(word: str, html: str) -> List[Tuple[str, str, str, str]]:
     for html in examples:
         try:
             en = html.next.text
-            han = html.next.nextSibling.text
-            result.append((word, en, han, html.encode_contents().decode()))
+            zh = html.next.nextSibling.text
+            result.append((word, en, zh, html.encode_contents().decode()))
         except AttributeError:
             if html.has_attr('toolskip'):
                 en = html.text
-                han = html.text
-                result.append((word, en, han, html.encode_contents().decode()))
+                zh = html.text
+                result.append((word, en, zh, html.encode_contents().decode()))
             else:
                 log.info(f">>>wrong element: {html}")
     return result
 
 
-def ingest(dict_name: str, examples: List[Tuple[str, str, str, str]]) -> int:
+def ingest(dictionary: str, examples: List[Tuple[str, str, str, str]]) -> int:
     """
-    将例句写入到ES中，字段（id,word,en,han,templates).
-    搜索的是en,han字段，id=word+en.strip保证例句不重复
+    将例句写入到ES中，字段（id,word,en,zh,html).
+    搜索的是en,zh字段，id=word+en.strip保证例句不重复
     html是例句的原始html，方便展示
-    :param dict_name: LSC4 or O8C,方便在返回html中添加css
-    :param examples:(word,en,han,templates)
+    :param dictionary: LSC4 or O8C,方便在返回html中添加css
+    :param examples:(word,en,zh,html)
     :return: success count
     """
 
     docs = []
     for tpl in examples:
-        word, en, han, html = tpl
+        word, en, zh, html = tpl
         source = {
-            "dict": dict_name,
-            "en": en,
-            "han": han,
-            "templates": html
+            ExampleConst.dictionary: dictionary,
+            ExampleConst.example_en: en,
+            ExampleConst.example_zh: zh,
+            ExampleConst.example_html: html
         }
         body = {
-            "_index": INDEX,
+            "_index": ExampleConst.index,
             "_source": source,
-            "_id": dict_name + "-" + word + "-" + re.sub(r'\W+', '', en)
+            "_id": dictionary + "-" + word + "-" + re.sub(r'\W+', '', en)
         }
         docs.append(body)
     helpers.bulk(esClient, docs)
@@ -72,14 +73,14 @@ def ingest(dict_name: str, examples: List[Tuple[str, str, str, str]]) -> int:
 
 
 def es_indexing(builder) -> int:
-    """indexing all screenshots in lsc4 dict
+    """indexing all examples in lsc4 dict
     TODO: 性能很差，indexing动作应该放在解析mdx文件的时候
     :param builder dict builder
     """
     # create index
     if not create_index():
         return 0
-    log.info("es is connected and index created succeed, starting indexing the screenshots...")
+    log.info("es is connected and index created succeed, starting indexing...")
     conn = sqlite3.connect(builder.get_mdx_db())
     cursor = conn.execute('SELECT key_text FROM MDX_INDEX')
     keys = [item[0] for item in cursor]
@@ -105,10 +106,10 @@ def es_indexing(builder) -> int:
 
 def create_index() -> bool:
     """创建index"""
-    if esClient.indices.exists(INDEX):
-        log.info(f">>>the index {INDEX} already exists,indexing skipped")
+    if esClient.indices.exists(ExampleConst.index):
+        log.info(f">>>the index {ExampleConst.index} already exists,indexing skipped")
         return False
-    mappings = {
+    mapping = {
         "settings": {
             "index": {
                 "number_of_shards": 1,
@@ -117,32 +118,32 @@ def create_index() -> bool:
             "analysis": {
                 "analyzer": {
                     "default": {
-                        "type": "stand"
+                        "type": "standard"
                     },
                     "default_search": {
-                        "type": "stand"
+                        "type": "standard"
                     }
                 }
             }
         },
         "mappings": {
             "properties": {
-                "dict": {
+                ExampleConst.dictionary: {
                     "type": "keyword"
                 },
-                "en": {
+                ExampleConst.example_en: {
                     "type": "text"
                 },
-                "zh": {
+                ExampleConst.example_zh: {
                     "type": "text"
                 },
-                "templates": {
+                ExampleConst.example_html: {
                     "type": "text"
                 }
             }
         }
     }
 
-    resp = esClient.indices.create(index=INDEX, body=mappings)
-    log.info(">>>ES mapping created")
+    resp = esClient.indices.create(index=ExampleConst.index, body=mapping)
+    log.info(f">>>ES index={ExampleConst.index} mapping created")
     return resp
