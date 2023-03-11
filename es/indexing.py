@@ -4,7 +4,7 @@ import sqlite3
 from typing import Tuple, List
 
 from bs4 import BeautifulSoup
-from elasticsearch6 import helpers
+from elasticsearch7 import helpers
 
 from es.config import INDEX, esClient
 
@@ -72,14 +72,14 @@ def ingest(dict_name: str, examples: List[Tuple[str, str, str, str]]) -> int:
 
 
 def es_indexing(builder) -> int:
-    """indexing all examples in lsc4 dict
+    """indexing all screenshots in lsc4 dict
     TODO: 性能很差，indexing动作应该放在解析mdx文件的时候
     :param builder dict builder
     """
     # create index
     if not create_index():
         return 0
-    log.info("es is connected and index created succeed, starting indexing the examples...")
+    log.info("es is connected and index created succeed, starting indexing the screenshots...")
     conn = sqlite3.connect(builder.get_mdx_db())
     cursor = conn.execute('SELECT key_text FROM MDX_INDEX')
     keys = [item[0] for item in cursor]
@@ -117,10 +117,10 @@ def create_index() -> bool:
             "analysis": {
                 "analyzer": {
                     "default": {
-                        "type": "ik_smart"
+                        "type": "stand"
                     },
                     "default_search": {
-                        "type": "ik_smart"
+                        "type": "stand"
                     }
                 }
             }
@@ -133,7 +133,7 @@ def create_index() -> bool:
                 "en": {
                     "type": "text"
                 },
-                "han": {
+                "zh": {
                     "type": "text"
                 },
                 "templates": {

@@ -1,4 +1,4 @@
-from es import search_han_examples
+from es import search_zh_examples
 from mdict import get_definition_mdx
 
 
@@ -10,7 +10,7 @@ def qry_mdx_def(text: str) -> str:
     if not text:
         return ''
     if _contains_chinese(text):
-        return get_definition_mdx(text, '汉语词典3') + search_han_examples(text)
+        return get_definition_mdx(text, '汉语词典3') + search_zh_examples(text)
     else:  # 英文词典
         if len(text.split(' ')) > 1:
             text = text.split(' ')[0]

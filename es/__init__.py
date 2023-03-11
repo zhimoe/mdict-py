@@ -8,13 +8,13 @@ log = logging.getLogger("ES")
 logging.basicConfig(level=logging.INFO)
 
 if config.ES_ENABLED:
-    log.info(">>>ES enabled, starting indexing the LSC4 chinese examples to es...")
+    log.info(">>>ES enabled, starting indexing the LSC4 chinese screenshots to es...")
     es_indexing(MdxIndexBuilders['LSC4'])
 else:
     log.info(">>>ES disabled, indexing skipped...")
 
 
-def search_han_examples(word: str) -> str:
+def search_zh_examples(word: str) -> str:
     """查询es中朗文4的example
     """
     if not config.ES_ENABLED:
@@ -23,7 +23,7 @@ def search_han_examples(word: str) -> str:
     dsl = {
         "query": {
             "match": {
-                "han": word
+                "zh": word
             }
         }
     }
