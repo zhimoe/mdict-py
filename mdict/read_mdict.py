@@ -16,19 +16,18 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
-from enum import Enum, unique
-from struct import pack, unpack
-from io import BytesIO
+import json
 import re
 import sys
-import json
-from typing import Dict
-
-from mdict.utils.ripemd128 import ripemd128
-from mdict.utils.pureSalsa20 import Salsa20
-
 # zlib compression is used for engine version >=2.0
 import zlib
+from enum import Enum, unique
+from io import BytesIO
+from struct import pack, unpack
+from typing import Dict
+
+from mdict.utils.pureSalsa20 import Salsa20
+from mdict.utils.ripemd128 import ripemd128
 
 # LZO compression is used for engine version < 2.0
 try:

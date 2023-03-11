@@ -4,7 +4,6 @@ import json
 import os
 import re
 import sqlite3
-import sys
 # zlib compression is used for engine version >=2.0
 import zlib
 from struct import pack
@@ -19,6 +18,7 @@ except ImportError:
     print("LZO compression support is not available")
 
 version = '1.1'
+
 
 class MdictDb(object):
     # todo: enable history
