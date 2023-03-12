@@ -15,21 +15,22 @@ else:
     log.info(">>>ES disabled, indexing skipped...")
 
 
-def search_zh_examples(word: str) -> str:
-    """查询es中朗文4的example
-    """
+def search_examples(word: str, lang: str) -> str:
     if not config.ES_ENABLED:
         return ""
 
     dsl = {
         "query": {
             "match": {
-                "zh": word
+                lang: word
             }
         }
     }
     res = config.esClient.search(index=ExampleConst.index, body=dsl)
-    examples_html = """<strong>朗文当代4相关例句</strong><link rel="stylesheet" type="text/css" href="LSC4.css">"""
+    examples_html = """ <br/>
+                        <strong>朗文当代4相关例句</strong>
+                        <link rel="stylesheet" type="text/css" href="LSC4.css">
+                    """
     if res["hits"]["total"]["value"] > 0:
         hits = res["hits"]["hits"]
         for hit in hits:
@@ -37,3 +38,13 @@ def search_zh_examples(word: str) -> str:
             examples_html += '<span class="example">' + one_example_html + '</span>'
         return examples_html
     return ''
+
+
+def search_zh_examples(word: str) -> str:
+    """查询es中朗文4的example
+    """
+    return search_examples(word, "zh")
+
+
+def search_en_examples(word: str) -> str:
+    return search_examples(word, "en")

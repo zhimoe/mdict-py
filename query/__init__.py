@@ -1,4 +1,4 @@
-from es import search_zh_examples
+from es import search_zh_examples, search_en_examples
 from mdict import get_definition_mdx
 
 
@@ -11,10 +11,12 @@ def qry_mdx_def(text: str) -> str:
         return ''
     if _contains_chinese(text):
         return get_definition_mdx(text, '汉语词典3') + search_zh_examples(text)
-    else:  # 英文词典
-        if len(text.split(' ')) > 1:
-            text = text.split(' ')[0]
-        return get_definition_mdx(text, '牛津高阶8')
+
+    # multi words then only search examples
+    if len(text.split(' ')) > 1:
+        return search_en_examples(text)
+    # one word then search both dictionary and examples
+    return get_definition_mdx(text, '牛津高阶8') + search_en_examples(text)
 
 
 def _contains_chinese(word: str) -> bool:
