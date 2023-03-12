@@ -1,4 +1,4 @@
-FROM python-3.10:latest
+FROM python-3.11:latest
 
 COPY ./ /opt/
 
@@ -10,4 +10,4 @@ WORKDIR /opt/
 
 EXPOSE 8080
 
-CMD ["python", "./app.py"]
+CMD ["python", "./src/app.py"]

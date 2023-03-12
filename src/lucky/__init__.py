@@ -1,6 +1,6 @@
 import random
 
-words_list = open('lucky/freq_words.txt').read().splitlines()
+words_list = open('src/lucky/freq_words.txt').read().splitlines()
 
 
 def get_random_word() -> str:

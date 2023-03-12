@@ -1,5 +1,5 @@
-from es import search_zh_examples, search_en_examples
-from mdict import get_definition_mdx
+from src.es import search_zh_examples, search_en_examples
+from src.mdict import get_definition_mdx
 
 
 def qry_mdx_def(text: str) -> str:

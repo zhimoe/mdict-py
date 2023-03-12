@@ -1,22 +1,23 @@
 import logging
 
-import es.config as config
-from es.config import ExampleConst
-from es.indexing import es_indexing
-from mdict import MdxIndexBuilders
+import src.es.config as config
+from src.config import es_config
+from src.es.config import ExampleConst
+from src.es.indexing import es_indexing
+from src.mdict import MdictDbMap
 
 log = logging.getLogger(__name__)
 # logging.basicConfig(level=logging.INFO)
 
-if config.ES_ENABLED:
+if es_config.enable:
     log.info(">>>ES enabled, starting indexing the LSC4 examples to es...")
-    es_indexing(MdxIndexBuilders['LSC4'])
+    es_indexing(MdictDbMap['LSC4'])
 else:
     log.info(">>>ES disabled, indexing skipped...")
 
 
 def search_examples(word: str, lang: str) -> str:
-    if not config.ES_ENABLED:
+    if not es_config.enable:
         return ""
 
     dsl = {
@@ -41,7 +42,8 @@ def search_examples(word: str, lang: str) -> str:
 
 
 def search_zh_examples(word: str) -> str:
-    """查询es中朗文4的example
+    """
+    查询es中朗文4的example
     """
     return search_examples(word, "zh")
 

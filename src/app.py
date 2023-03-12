@@ -8,10 +8,10 @@ from query import qry_mdx_def
 app = Flask(__name__,
             static_url_path='',
             static_folder='resources/static',
-            template_folder='resources/templates'
+            template_folder='../resources/templates'
             )
 
-log = logging.getLogger("App")
+log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 app.logger.propagate = False
 log.propagate = False

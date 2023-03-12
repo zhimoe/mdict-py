@@ -8,11 +8,11 @@ import sqlite3
 import zlib
 from struct import pack
 
-from mdict.read_mdict import MDX, MDD
+from src.mdict.read_mdict import MDX, MDD
 
 # LZO compression is used for engine version < 2.0
 try:
-    from mdict.utils import lzo
+    from src.mdict.utils import lzo
 except ImportError:
     lzo = None
     print("LZO compression support is not available")

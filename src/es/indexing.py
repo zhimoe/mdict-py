@@ -6,11 +6,11 @@ from typing import Tuple, List
 from bs4 import BeautifulSoup
 from elasticsearch7 import helpers
 
-from es.config import ExampleConst
-from es.config import esClient
+from src.es.config import ExampleConst
+from src.es.config import esClient
+from src.mdict import MdictDbMap
 
-log = logging.getLogger("ES")
-logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
 
 
 def example_parse_o8c(dict_name: str, word: str, html: str) -> Tuple[str, str, str]:
@@ -72,24 +72,24 @@ def ingest(dictionary: str, examples: List[Tuple[str, str, str, str]]) -> int:
     return len(examples)
 
 
-def es_indexing(builder) -> int:
+def es_indexing(mdcitdb) -> int:
     """indexing all examples in lsc4 dict
     TODO: 性能很差，indexing动作应该放在解析mdx文件的时候
-    :param builder dict builder
+    :param mdcitdb dictionary sqlite3 db metadata
     """
     # create index
     if not create_index():
         return 0
     log.info("es is connected and index created succeed, starting indexing...")
-    conn = sqlite3.connect(builder.get_mdx_db())
-    cursor = conn.execute('SELECT key_text FROM MDX_INDEX')
+    conn = sqlite3.connect(mdcitdb.get_mdx_db())
+    cursor = conn.execute("SELECT key_text FROM MDX_INDEX")
     keys = [item[0] for item in cursor]
     conn.close()
 
     examples = []
 
     for key in keys:
-        content = builder.mdx_lookup(key)
+        content = mdcitdb.mdx_lookup(key)
         str_content = ""
         if len(content) > 0:
             for c in content:
@@ -102,6 +102,10 @@ def es_indexing(builder) -> int:
                 examples = []
     ingest("lsc4", examples)
     log.info(">>>indexing done", len(keys))
+
+
+if __name__ == '__main__':
+    es_indexing(MdictDbMap['O8C'])
 
 
 def create_index() -> bool:

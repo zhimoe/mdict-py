@@ -4,8 +4,8 @@ from typing import List
 import inflect
 from spellchecker import SpellChecker
 
-from mdict.config import MdxIndexBuilders
-from mdict.mdict_db import MdictDb
+from src.mdict.config import MdictDbMap
+from src.mdict.mdict_db import MdictDb
 
 sing = inflect.engine()  # 单复数转换
 spellchecker = SpellChecker()  # 拼写纠正
@@ -28,9 +28,9 @@ error_msg = """
 
 def get_definition_mdx(word: str, dict_opt: str) -> str:
     """根据关键字得到MDX词典的解释"""
-    if dict_opt not in MdxIndexBuilders:
+    if dict_opt not in MdictDbMap:
         return error_msg
-    dict_index_builder = MdxIndexBuilders[dict_opt]
+    dict_index_builder = MdictDbMap[dict_opt]
     try:
         if not word:
             return ""

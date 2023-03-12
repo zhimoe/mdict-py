@@ -26,12 +26,12 @@ from io import BytesIO
 from struct import pack, unpack
 from typing import Dict
 
-from mdict.utils.pureSalsa20 import Salsa20
-from mdict.utils.ripemd128 import ripemd128
+from src.mdict.utils.pureSalsa20 import Salsa20
+from src.mdict.utils.ripemd128 import ripemd128
 
 # LZO compression is used for engine version < 2.0
 try:
-    from mdict.utils import lzo
+    from src.mdict.utils import lzo
 except ImportError:
     lzo = None
     print("LZO compression support is not available")
