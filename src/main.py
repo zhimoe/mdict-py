@@ -40,5 +40,5 @@ if __name__ == '__main__':
     """
     阅读readme和config.ini
     """
-    log.info(">>> flask app running...")
+    log.info(">>>flask app running...")
     app.run(debug=False, port=5000)

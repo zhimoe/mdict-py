@@ -1,5 +1,8 @@
 import configparser
+import os
 from dataclasses import dataclass
+
+ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
 
 
 @dataclass
@@ -24,7 +27,7 @@ class AIConfig:
 
 def _init():
     parser = configparser.ConfigParser()
-    parser.read("config.ini")
+    parser.read(os.path.join(ROOT_DIR, "config.ini"))
     global es_config
     es_config = ESConfig(parser)
     global ai_config

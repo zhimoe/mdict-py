@@ -10,13 +10,13 @@ def qry_mdx_def(text: str) -> str:
     if not text:
         return ''
     if _contains_chinese(text):
-        return get_definition_mdx(text, '汉语词典3') + search_zh_examples(text)
+        return get_definition_mdx(text, 'HAN3') + search_zh_examples(text)
 
     # multi words then only search examples
     if len(text.split(' ')) > 1:
         return search_en_examples(text)
     # one word then search both dictionary and examples
-    return get_definition_mdx(text, '牛津高阶8') + search_en_examples(text)
+    return get_definition_mdx(text, 'O8C') + search_en_examples(text)
 
 
 def _contains_chinese(word: str) -> bool:

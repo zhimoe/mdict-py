@@ -1,3 +1,4 @@
+import logging
 import re
 from typing import List
 
@@ -60,7 +61,8 @@ def get_definition_mdx(word: str, dict_opt: str) -> str:
                 str_content += c.replace("\r\n", "").replace("entry:/", "")
 
         return str_content
-    except:
+    except Exception as e:
+        logging.exception(e, exc_info=True)
         return error_msg
 
 

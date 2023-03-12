@@ -34,7 +34,7 @@ Mdict项目是一个糅合了MDX词典、ES例句搜索和AI模型翻译的多�
 ```bash
 # git clone后如果不使用es和ai的话,修改config.ini中Enable=false
 pipenv install
-python app.py
+python main.py
 ```
 
 ### 使用es和ai

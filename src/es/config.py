@@ -19,11 +19,12 @@ if es_config.enable:
 
 
 @unique
-class ExampleConst(str, Enum):
+class ESConst(str, Enum):
     """
     es index name and mapping fields name
     """
     index = "mdict_examples_index"
+    word = "word"
     example_en = "en"
     example_zh = "zh"
     example_html = "html"

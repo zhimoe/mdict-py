@@ -10,4 +10,4 @@ WORKDIR /opt/
 
 EXPOSE 8080
 
-CMD ["python", "./src/app.py"]
+CMD ["python", "./src/main.py"]

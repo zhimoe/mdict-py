@@ -1,23 +1,22 @@
 import logging
 
-import src.es.config as config
 from src.config import es_config
-from src.es.config import ExampleConst
+from src.es.config import ESConst, esClient
 from src.es.indexing import es_indexing
 from src.mdict import MdictDbMap
 
 log = logging.getLogger(__name__)
-# logging.basicConfig(level=logging.INFO)
 
 if es_config.enable:
     log.info(">>>ES enabled, starting indexing the LSC4 examples to es...")
-    es_indexing(MdictDbMap['LSC4'])
+    es_indexing('LSC4', MdictDbMap['LSC4'])
+    es_indexing('O8C', MdictDbMap['O8C'])
 else:
     log.info(">>>ES disabled, indexing skipped...")
 
 
 def search_examples(word: str, lang: str) -> str:
-    if not es_config.enable:
+    if not esClient:
         return ""
 
     dsl = {
@@ -27,7 +26,7 @@ def search_examples(word: str, lang: str) -> str:
             }
         }
     }
-    res = config.esClient.search(index=ExampleConst.index, body=dsl)
+    res = esClient.search(index=ESConst.index, body=dsl)
     examples_html = """ <br/>
                         <strong>朗文当代4相关例句</strong>
                         <link rel="stylesheet" type="text/css" href="LSC4.css">
@@ -35,7 +34,7 @@ def search_examples(word: str, lang: str) -> str:
     if res["hits"]["total"]["value"] > 0:
         hits = res["hits"]["hits"]
         for hit in hits:
-            one_example_html = hit["_source"][ExampleConst.example_html]
+            one_example_html = hit["_source"][ESConst.example_html]
             examples_html += '<span class="example">' + one_example_html + '</span>'
         return examples_html
     return ''
