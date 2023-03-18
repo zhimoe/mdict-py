@@ -10,7 +10,8 @@ function queryMdx(word) {
     $.ajax({
         url: './query',
         type: 'POST',
-        data: {'word': word},
+        data: JSON.stringify({'word': word}),
+        contentType: 'application/json',
         dataType: 'html',
         success: function (data) {
             if (data !== '') {

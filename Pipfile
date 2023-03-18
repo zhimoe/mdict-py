@@ -4,13 +4,16 @@ verify_ssl = true
 name = "tsinghua"
 
 [packages]
+pydantic = "*"
 inflect = "==4.1.0"
 pyspellchecker = "==0.5.5"
 elasticsearch7 = "==7.17.7"
 beautifulsoup4 = "==4.9.1"
-jinja2 = "==2.11.2"
-flask = "*"
 markupsafe = "==2.0.1"
+starlite = { version = "*", extras = ["standard", "jinja2"] }
+uvicorn = { extras = ["standard"], version = "*" }
+uvloop = "*"
+jinja2 = "*"
 
 [dev-packages]
 
