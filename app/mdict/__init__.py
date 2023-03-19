@@ -5,8 +5,8 @@ from typing import List
 import inflect
 from spellchecker import SpellChecker
 
-from src.mdict.config import MdictDbMap
-from src.mdict.mdict_db import MdictDb
+from app.mdict.config import MdictDbMap
+from app.mdict.mdict_db import MdictDb
 
 sing = inflect.engine()  # 单复数转换
 spellchecker = SpellChecker()  # 拼写纠正

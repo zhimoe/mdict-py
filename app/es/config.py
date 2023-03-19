@@ -3,7 +3,7 @@ from enum import unique, Enum
 
 from elasticsearch7 import Elasticsearch
 
-from src.config import es_config
+from app.config import es_config
 
 log = logging.getLogger(__name__)
 

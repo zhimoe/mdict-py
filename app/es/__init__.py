@@ -1,9 +1,9 @@
 import logging
 
-from src.config import es_config
-from src.es.config import ESConst, esClient
-from src.es.indexing import es_indexing
-from src.mdict import MdictDbMap
+from app.config import es_config
+from app.es.config import ESConst, esClient
+from app.es.indexing import es_indexing
+from app.mdict import MdictDbMap
 
 log = logging.getLogger(__name__)
 

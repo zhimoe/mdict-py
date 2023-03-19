@@ -3,8 +3,8 @@
 import logging
 import os
 
-from src.config import ROOT_DIR
-from src.mdict.mdict_db import MdictDb
+from app.config import ROOT_DIR
+from app.mdict.mdict_db import MdictDb
 
 log = logging.getLogger("Mdict")
 logging.basicConfig(level=logging.INFO)

@@ -6,8 +6,8 @@ import uvicorn
 from starlite import Starlite, TemplateConfig, StaticFilesConfig, Template, get, post
 from starlite.contrib.jinja import JinjaTemplateEngine
 
-from src.lucky import get_random_word
-from src.query import qry_mdx_def
+from app.lucky import get_random_word
+from app.query import qry_mdx_def
 
 log = logging.getLogger(__name__)
 

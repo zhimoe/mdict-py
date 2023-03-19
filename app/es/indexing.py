@@ -6,7 +6,7 @@ from typing import Tuple, List
 from bs4 import BeautifulSoup
 from elasticsearch7 import helpers
 
-from src.es.config import ESConst, esClient
+from app.es.config import ESConst, esClient
 
 log = logging.getLogger(__name__)
 
