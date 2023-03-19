@@ -46,7 +46,7 @@ def _es_indexing(dictionary, mdictdb) -> int:
             _ingest(examples)
             examples.clear()
     _ingest(examples)
-    log.info(">>>indexing done, doc count=%s", len(keys))
+    log.info(f">>>indexing {dictionary} done, doc count={len(keys)}")
 
 
 def _ingest(examples: List[ESDoc]) -> int:
