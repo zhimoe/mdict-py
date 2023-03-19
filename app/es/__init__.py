@@ -2,15 +2,12 @@ import logging
 
 from app.config import es_config
 from app.es.config import ESConst, esClient
-from app.es.indexing import es_indexing
-from app.mdict import MdictDbMap
+from app.es.indexing import indexing
 
 log = logging.getLogger(__name__)
 
 if es_config.enable:
-    log.info(">>>ES enabled, starting indexing the examples to es...")
-    es_indexing('LSC4', MdictDbMap['LSC4'])
-    es_indexing('O8C', MdictDbMap['O8C'])
+    indexing(['LSC4', 'O8C'])
 else:
     log.info(">>>ES disabled, indexing skipped...")
 
@@ -41,9 +38,6 @@ def search_examples(word: str, lang: str) -> str:
 
 
 def search_zh_examples(word: str) -> str:
-    """
-    查询es中朗文4的example
-    """
     return search_examples(word, "zh")
 
 

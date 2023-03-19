@@ -6,20 +6,27 @@ from bs4 import BeautifulSoup
 from elasticsearch7 import helpers
 
 from app.es.config import ESConst, esClient, ESDoc
+from app.mdict import MdictDbMap
 
 log = logging.getLogger(__name__)
 
 
-def es_indexing(dictionary, mdictdb) -> int:
-    """indexing all examples in mdx dict
-    TODO: 性能很差，indexing动作应该放在解析mdx文件的时候
-    :param mdictdb dictionary sqlite3 db metadata
-    :param dictionary LSC4 or O8C
-    """
+def indexing(dicts: List[str]) -> int:
+    """indexing all examples in mdx dict"""
     # create index
     if not _create_index():
         return 0
-    log.info("es is connected and index created succeed, starting indexing...")
+    log.info(">>>ES enabled, starting indexing the examples to es...")
+    for d in dicts:
+        _es_indexing(d, MdictDbMap[d])
+
+
+def _es_indexing(dictionary, mdictdb) -> int:
+    """indexing all examples in mdx dict
+    TODO: 性能很差，indexing动作应该放在解析mdx文件的时候
+    :param dictionary LSC4 or O8C
+    :param mdictdb dictionary sqlite3 db metadata
+    """
     conn = sqlite3.connect(mdictdb.get_mdx_db())
     cursor = conn.execute("SELECT key_text FROM MDX_INDEX")
     keys = [item[0] for item in cursor]
