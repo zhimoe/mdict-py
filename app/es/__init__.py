@@ -8,7 +8,7 @@ from app.mdict import MdictDbMap
 log = logging.getLogger(__name__)
 
 if es_config.enable:
-    log.info(">>>ES enabled, starting indexing the LSC4 examples to es...")
+    log.info(">>>ES enabled, starting indexing the examples to es...")
     es_indexing('LSC4', MdictDbMap['LSC4'])
     es_indexing('O8C', MdictDbMap['O8C'])
 else:
@@ -28,7 +28,7 @@ def search_examples(word: str, lang: str) -> str:
     }
     res = esClient.search(index=ESConst.index, body=dsl)
     examples_html = """ <br/>
-                        <strong>朗文当代4相关例句</strong>
+                        <strong>牛津与朗文相关例句</strong>
                         <link rel="stylesheet" type="text/css" href="LSC4.css">
                     """
     if res["hits"]["total"]["value"] > 0:

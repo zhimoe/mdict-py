@@ -1,5 +1,6 @@
+import dataclasses
+import json
 import logging
-from enum import unique, Enum
 
 from elasticsearch7 import Elasticsearch
 
@@ -14,12 +15,12 @@ if es_config.enable:
     try:
         if esClient.ping():
             log.info(">>>connected ES...")
-    except:
+    except Exception as e:
         log.error(">>>try connect to ES failed, disabled ES...")
+        logging.exception(e)
 
 
-@unique
-class ESConst(str, Enum):
+class ESConst:
     """
     es index name and mapping fields name
     """
@@ -29,3 +30,17 @@ class ESConst(str, Enum):
     example_zh = "zh"
     example_html = "html"
     dictionary = "dictionary"
+    batch_size = 3000
+
+
+@dataclasses.dataclass
+class ESDoc:
+    dictionary: str
+    word: str
+    en: str
+    zh: str
+    html: str
+
+    @property
+    def json(self):
+        return json.dumps(self.__dict__)
