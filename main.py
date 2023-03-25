@@ -26,21 +26,20 @@ async def feeling_lucky() -> str:
     return qry_mdx_def(word)
 
 
-@get(path="/")
-def index() -> Template:
-    return Template(name="index.html")
+@get()
+def home() -> Template:
+    return Template(name="home.html")
 
 
 app = Starlite(
-    route_handlers=[index, query, feeling_lucky],
+    route_handlers=[home, query, feeling_lucky],
     template_config=TemplateConfig(
         directory=Path("resources/templates"),
         engine=JinjaTemplateEngine,
     ),
-    static_files_config=StaticFilesConfig(
-        path="static",
-        directories=[Path("resources/static")]
-    )
+    static_files_config=[
+        StaticFilesConfig(path="/", directories=[Path("resources/static")]),
+    ]
 )
 
 if __name__ == '__main__':
