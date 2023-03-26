@@ -1,5 +1,9 @@
+import logging
+
 from app.es import search_zh_examples, search_en_examples
 from app.mdict import get_definition_mdx
+
+log = logging.getLogger(__name__)
 
 
 def qry_mdx_def(text: str) -> str:
@@ -10,13 +14,25 @@ def qry_mdx_def(text: str) -> str:
     if not text:
         return ''
     if _contains_chinese(text):
-        return get_definition_mdx(text, 'HAN3') + search_zh_examples(text)
+        resp = ""
+        try:
+            resp += search_zh_examples(text)
+            log.info(f">>> {text} es search response: {resp}")
+        except Exception as e:
+            logging.exception("search es examples failed", e)
+        return get_definition_mdx(text, 'HAN3') + resp
 
+    resp = ""
+    try:
+        resp += search_en_examples(text)
+        log.info(f">>> {text} es search response: {resp}")
+    except Exception as e:
+        logging.exception("search es examples failed", e)
     # multi words then only search examples
     if len(text.split(' ')) > 1:
-        return search_en_examples(text)
+        return resp
     # one word then search both dictionary and examples
-    return get_definition_mdx(text, 'O8C') + search_en_examples(text)
+    return get_definition_mdx(text, 'O8C') + resp
 
 
 def _contains_chinese(word: str) -> bool:

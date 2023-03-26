@@ -10,6 +10,8 @@ from app.lucky import get_random_word
 from app.query import qry_mdx_def
 
 log = logging.getLogger(__name__)
+# disable elasticsearch INFO log
+logging.getLogger('elasticsearch').setLevel(logging.WARN)
 
 
 @post(path="/query")

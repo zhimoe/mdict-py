@@ -34,7 +34,7 @@ def get_definition_mdx(word: str, dict_opt: str) -> str:
     dict_index_builder = MdictDbMap[dict_opt]
     try:
         if not word:
-            return ""
+            return "查无结果"
         word = word.lower()
         raw_result = dict_index_builder.mdx_lookup(word)
         # 复数转为单数
@@ -46,7 +46,7 @@ def get_definition_mdx(word: str, dict_opt: str) -> str:
         if len(raw_result) < 1:
             raw_result = dict_index_builder.mdx_lookup(word.upper())
         if len(raw_result) < 1:
-            return ""
+            return "查无结果"
         # ???
         pattern = re.compile(r"@@@LINK=([\w\s]*)")
         rst = pattern.match(raw_result[0])
