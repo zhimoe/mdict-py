@@ -3,9 +3,8 @@ from pathlib import Path
 from typing import Dict
 
 import uvicorn
-from litestar import Litestar, post,get
+from litestar import Litestar, post
 from litestar.contrib.jinja import JinjaTemplateEngine
-from litestar.response_containers import Template
 from litestar.static_files.config import StaticFilesConfig
 from litestar.template import TemplateConfig
 
@@ -31,13 +30,8 @@ async def feeling_lucky() -> str:
     return qry_mdx_def(word)
 
 
-@get(path="home")
-def home() -> Template:
-    return Template(name="home.html")
-
-
 app = Litestar(
-    route_handlers=[home, query, feeling_lucky],
+    route_handlers=[query, feeling_lucky],
     template_config=TemplateConfig(
         directory=Path("resources/templates"),
         engine=JinjaTemplateEngine,
