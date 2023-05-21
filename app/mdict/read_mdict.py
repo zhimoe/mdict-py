@@ -21,7 +21,7 @@ import re
 import sys
 # zlib compression is used for engine version >=2.0
 import zlib
-from enum import Enum, unique
+from enum import unique, StrEnum
 from io import BytesIO
 from struct import pack, unpack
 from typing import Dict
@@ -42,7 +42,7 @@ if sys.hexversion >= 0x03000000:
 
 
 @unique
-class NumberFmt(str, Enum):
+class NumberFmt(StrEnum):
     """
     python struct.unpack format, reference: https://docs.python.org/3/library/struct.html
     """
