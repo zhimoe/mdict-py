@@ -3,8 +3,11 @@ from pathlib import Path
 from typing import Dict
 
 import uvicorn
-from starlite import Starlite, TemplateConfig, StaticFilesConfig, Template, get, post
-from starlite.contrib.jinja import JinjaTemplateEngine
+from litestar import Litestar, post,get
+from litestar.contrib.jinja import JinjaTemplateEngine
+from litestar.response_containers import Template
+from litestar.static_files.config import StaticFilesConfig
+from litestar.template import TemplateConfig
 
 from app.lucky import get_random_word
 from app.query import qry_mdx_def
@@ -28,12 +31,12 @@ async def feeling_lucky() -> str:
     return qry_mdx_def(word)
 
 
-@get()
+@get(path="home")
 def home() -> Template:
     return Template(name="home.html")
 
 
-app = Starlite(
+app = Litestar(
     route_handlers=[home, query, feeling_lucky],
     template_config=TemplateConfig(
         directory=Path("resources/templates"),
