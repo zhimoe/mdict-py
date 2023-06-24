@@ -37,7 +37,7 @@ app = Litestar(
         engine=JinjaTemplateEngine,
     ),
     static_files_config=[
-        StaticFilesConfig(path="/", directories=[Path("resources/static")]),
+        StaticFilesConfig(path="/", directories=[Path("resources/static")], html_mode=True),
     ]
 )
 
@@ -46,5 +46,6 @@ if __name__ == '__main__':
     阅读readme和config.ini
     """
     uvicorn.run(
-        app
+        app=app,
+        port=8888
     )
