@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Dict
 
 import uvicorn
-from litestar import Litestar, post
+from litestar import Litestar, post, get
 from litestar.contrib.jinja import JinjaTemplateEngine
 from litestar.static_files.config import StaticFilesConfig
 from litestar.template import TemplateConfig
@@ -23,7 +23,7 @@ async def query(data: Dict[str, str]) -> str:
     return qry_mdx_def(word)
 
 
-@post(path="/lucky")
+@get(path="/lucky")
 async def feeling_lucky() -> str:
     word = get_random_word()
     log.info(f">>> lucky for={word}")

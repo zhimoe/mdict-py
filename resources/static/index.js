@@ -63,7 +63,8 @@ $(window).bind('keyup keydown', function (e) {
     if ((e.ctrlKey || e.metaKey)
         && String.fromCharCode(e.which).toLowerCase() === 'l') {
         e.preventDefault();
-        $('#word').val('').focus();//清空
+        $('#word').val('').focus();
+        scrollTo(0, 0);
     }
 });
 
@@ -93,6 +94,6 @@ function parserWordFromResp(data) {
         return "";
     }
 
-    return topg.firstElementChild.innerHTML.split('·').join('')
+    return top_g.firstElementChild.innerHTML.split('·').join('')
 
 }
