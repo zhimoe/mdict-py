@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
-def init_mdict_map(dicts_map: Dict):
+def _init_mdict_map(dicts_map: Dict):
     MdxFiles = {
         "HAN3": file_abspath("resources/mdx/zh/汉语词典3.mdx"),
         "O8C": file_abspath("resources/mdx/en/牛津高阶8.mdx"),
@@ -28,4 +28,4 @@ def init_mdict_map(dicts_map: Dict):
 
 
 MdictDbMap = dict()
-init_mdict_map(MdictDbMap)
+_init_mdict_map(MdictDbMap)

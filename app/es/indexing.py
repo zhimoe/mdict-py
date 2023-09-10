@@ -5,23 +5,23 @@ from typing import List
 from bs4 import BeautifulSoup
 from elasticsearch7 import helpers
 
-from app.es.config import ESConst, esClient, ESDoc
+from app.es.client import ESConst, ESDoc
 from app.mdict import MdictDbMap
 
 log = logging.getLogger(__name__)
 
 
-def indexing(dicts: List[str]) -> int:
+def indexing(client, dicts: List[str]) -> int:
     """indexing all examples in mdx dict"""
     # create index
-    if not _create_index():
+    if not _create_index(client):
         return 0
     log.info(">>>ES enabled, starting indexing the examples to es...")
     for d in dicts:
         _es_indexing(d, MdictDbMap[d])
 
 
-def _es_indexing(dictionary, mdictdb) -> int:
+def _es_indexing(client, dictionary, mdictdb) -> int:
     """indexing all examples in mdx dict
     TODO: 性能很差，indexing动作应该放在解析mdx文件的时候
     :param dictionary LSC4 or O8C
@@ -49,7 +49,7 @@ def _es_indexing(dictionary, mdictdb) -> int:
     log.info(f">>>indexing {dictionary} done, doc count={len(keys)}")
 
 
-def _ingest(examples: List[ESDoc]) -> int:
+def _ingest(client, examples: List[ESDoc]) -> int:
     """
     将例句写入到ES中，字段（id,word,en,zh,html).
     搜索的是en,zh字段，id=word+en.strip保证例句不重复
@@ -67,7 +67,7 @@ def _ingest(examples: List[ESDoc]) -> int:
             "_source": doc.json,
         }
         docs.append(body)
-    helpers.bulk(esClient, docs)
+    helpers.bulk(client, docs)
     return len(examples)
 
 
@@ -107,9 +107,9 @@ def _example_parse(dictionary: str, word: str, raw_html: str) -> List[ESDoc]:
     return result
 
 
-def _create_index() -> bool:
+def _create_index(client) -> bool:
     """创建index"""
-    if esClient.indices.exists(ESConst.index):
+    if client.indices.exists(ESConst.index):
         log.info(f">>>the index {ESConst.index} already exists,indexing skipped")
         return False
     mapping = {
@@ -150,6 +150,6 @@ def _create_index() -> bool:
         }
     }
 
-    resp = esClient.indices.create(index=ESConst.index, body=mapping)
+    resp = client.indices.create(index=ESConst.index, body=mapping)
     log.info(f">>>ES index={ESConst.index} and mapping created")
     return resp

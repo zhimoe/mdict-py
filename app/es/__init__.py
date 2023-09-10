@@ -1,13 +1,15 @@
 import logging
 
 from app.config import es_config
-from app.es.config import ESConst, esClient
+from app.es.client import ESConst, ESClient
 from app.es.indexing import indexing
 
 log = logging.getLogger(__name__)
 
+esClient = ESClient.get_instance()
+
 if es_config.enable:
-    indexing(['LSC4', 'O8C'])
+    indexing(esClient, ['LSC4', 'O8C'])
 else:
     log.info(">>>ES disabled, indexing skipped...")
 
