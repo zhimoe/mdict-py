@@ -1,8 +1,15 @@
 import configparser
-import os
 from dataclasses import dataclass
+from pathlib import Path
 
-ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
+
+def project_root() -> Path:
+    return Path(__file__).parent.parent.parent
+
+
+def file_abspath(relative_path: str) -> str:
+    """get file absolute path from project root"""
+    return (project_root() / relative_path).as_posix()
 
 
 @dataclass
@@ -27,7 +34,7 @@ class AIConfig:
 
 def _init():
     parser = configparser.ConfigParser()
-    parser.read(os.path.join(ROOT_DIR, "config.ini"))
+    parser.read(project_root() / "config.ini")
     global es_config
     es_config = ESConfig(parser)
     global ai_config

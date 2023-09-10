@@ -2,26 +2,30 @@
 
 import logging
 import os
+from typing import Dict
 
-from app.config import ROOT_DIR
+from app.config import file_abspath
 from app.mdict.mdict_db import MdictDb
 
-log = logging.getLogger("Mdict")
 logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
+
+
+def init_mdict_map(dicts_map: Dict):
+    MdxFiles = {
+        "HAN3": file_abspath("resources/mdx/zh/汉语词典3.mdx"),
+        "O8C": file_abspath("resources/mdx/en/牛津高阶8.mdx"),
+        "LSC4": file_abspath("resources/mdx/en/朗文当代4.mdx"),
+    }
+
+    for name, location in MdxFiles.items():
+        if os.path.exists(location):
+            dicts_map[name] = MdictDb(location)
+        else:
+            log.warning(f"the dict({name}) file:{location} doesn't exist, skipped")
+    if not dicts_map:
+        log.error("all mdict files are not exist, please check the file location.")
+
 
 MdictDbMap = dict()
-
-MdxFiles = {
-    "HAN3": f'{os.path.join(ROOT_DIR, "resources/mdx/zh/汉语词典3.mdx")}',
-    "O8C": f'{os.path.join(ROOT_DIR, "resources/mdx/en/牛津高阶8.mdx")}',
-    "LSC4": f'{os.path.join(ROOT_DIR, "resources/mdx/en/朗文当代4.mdx")}',
-}
-
-for name, location in MdxFiles.items():
-    if not os.path.exists(location):
-        log.warning(f"the dict({name}) file:{location} doesn't exist, skipped")
-        continue
-    MdictDbMap[name] = MdictDb(location)
-
-if MdictDbMap:
-    log.info(f">>>all MdictDbs are built, dictionaries= {MdxFiles}")
+init_mdict_map(MdictDbMap)

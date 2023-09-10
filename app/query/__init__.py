@@ -17,7 +17,6 @@ def qry_mdx_def(text: str) -> str:
         resp = ""
         try:
             resp += search_zh_examples(text)
-            log.info(f">>> {text} es search response: {resp}")
         except Exception as e:
             logging.exception("search es examples failed", e)
         return get_definition_mdx(text, 'HAN3') + resp
@@ -25,7 +24,6 @@ def qry_mdx_def(text: str) -> str:
     resp = ""
     try:
         resp += search_en_examples(text)
-        log.info(f">>> {text} es search response: {resp}")
     except Exception as e:
         logging.exception("search es examples failed", e)
     # multi words then only search examples
