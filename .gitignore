@@ -6,6 +6,7 @@ __pycache__/
 # MDX, MDD and index DB
 *.zip
 
+.venv
 
 # Manual
 doc/

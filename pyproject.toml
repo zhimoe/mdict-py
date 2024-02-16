@@ -6,16 +6,18 @@ authors = ["zhimoe"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-litestar = "2.1.1"
-pydantic = "2.4.1"
+python = "3.11.7"
+litestar = "2.2.1"
+pydantic = "2.4.2"
 inflect = "7.0.0"
 pyspellchecker = "0.7.2"
 elasticsearch7 = "7.17.9"
-beautifulsoup4 = "4.9.3"
+beautifulsoup4 = "4.12.2"
 jinja2 = "3.1.2"
-#uvloop = "0.17.0"
-#uvicorn = "0.23.2"
+uvloop = "0.17.0"
+uvicorn = "0.23.2"
+#rich = "*"
+#asonic = "*"
 
 
 [build-system]
@@ -26,3 +28,16 @@ build-backend = "poetry.core.masonry.api"
 name = "tsinghua"
 url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 priority = "default"
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.11"
+
+[tool.ruff]
+line-length = 88
+indent-width = 4
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+fixable = ["ALL"]
+unfixable = ["B"]
