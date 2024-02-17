@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 esClient = ESClient.get_instance()
 
 if es_config.enable:
-    indexing(esClient, ['LSC4', 'O8C'])
+    indexing(esClient, ["LSC4", "O8C"])
 else:
     log.info(">>>ES disabled, indexing skipped...")
 
@@ -18,13 +18,7 @@ def search_examples(word: str, lang: str) -> str:
     if not esClient:
         return ""
 
-    dsl = {
-        "query": {
-            "match": {
-                lang: word
-            }
-        }
-    }
+    dsl = {"query": {"match": {lang: word}}}
     res = esClient.search(index=ESConst.index, body=dsl)
     examples_html = """ <br/>
                         <strong>牛津与朗文相关例句</strong>
@@ -34,9 +28,9 @@ def search_examples(word: str, lang: str) -> str:
         hits = res["hits"]["hits"]
         for hit in hits:
             one_example_html = hit["_source"][ESConst.example_html]
-            examples_html += '<span class="example">' + one_example_html + '</span>'
+            examples_html += '<span class="example">' + one_example_html + "</span>"
         return examples_html
-    return ''
+    return ""
 
 
 def search_zh_examples(word: str) -> str:

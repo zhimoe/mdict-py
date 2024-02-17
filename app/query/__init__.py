@@ -12,14 +12,14 @@ def qry_mdx_def(text: str) -> str:
     :return:
     """
     if not text:
-        return ''
+        return ""
     if _contains_chinese(text):
         resp = ""
         try:
             resp += search_zh_examples(text)
         except Exception as e:
             logging.exception("search es examples failed", e)
-        return get_definition_mdx(text, 'HAN3') + resp
+        return get_definition_mdx(text, "HAN3") + resp
 
     resp = ""
     try:
@@ -27,10 +27,10 @@ def qry_mdx_def(text: str) -> str:
     except Exception as e:
         logging.exception("search es examples failed", e)
     # multi words then only search examples
-    if len(text.split(' ')) > 1:
+    if len(text.split(" ")) > 1:
         return resp
     # one word then search both dictionary and examples
-    return get_definition_mdx(text, 'O8C') + resp
+    return get_definition_mdx(text, "O8C") + resp
 
 
 def _contains_chinese(word: str) -> bool:
@@ -39,6 +39,6 @@ def _contains_chinese(word: str) -> bool:
     :return bool
     """
     for ch in word:
-        if u'\u4e00' <= ch <= u'\u9fff':
+        if "\u4e00" <= ch <= "\u9fff":
             return True
     return False

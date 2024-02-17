@@ -1,5 +1,4 @@
-
-words_list = open('app/lucky/freq_words.txt').read().splitlines()
+words_list = open("app/lucky/freq_words.txt").read().splitlines()
 
 count = -1
 

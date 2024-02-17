@@ -12,8 +12,8 @@ sing = inflect.engine()  # 单复数转换
 spellchecker = SpellChecker()  # 拼写纠正
 
 
-def plural2singular(plural) -> str:
-    """return singular of the plural word, if the input is not plural then return input """
+def plural2singular(plural: str) -> str:
+    """return singular of the plural word, if the input is not plural then return input"""
     singular = sing.singular_noun(plural)
     if not singular:
         return plural
@@ -67,7 +67,7 @@ def get_definition_mdx(word: str, dict_opt: str) -> str:
 
 
 def get_definition_mdd(word: str, builder: MdictDb) -> List[str]:
-    """根据关键字得到MDD词典的媒体 """
+    """根据关键字得到MDD词典的媒体"""
     word = word.replace("/", "\\")
     content = builder.mdd_lookup(word)
     if len(content) > 0:

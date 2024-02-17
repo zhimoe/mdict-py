@@ -16,11 +16,12 @@ def _singleton(c):
 
 @_singleton
 class ESClient(object):
-
     def __init__(self):
         self.client = None
         if es_config.enable:
-            self.client = Elasticsearch([{'host': es_config.host, 'port': es_config.port}])
+            self.client = Elasticsearch(
+                [{"host": es_config.host, "port": es_config.port}]
+            )
             try:
                 if self.client.ping():
                     log.info(">>>connected ES...")
@@ -28,7 +29,9 @@ class ESClient(object):
                 log.error(">>>try connect to ES failed, disabled ES...")
                 logging.exception(e)
         else:
-            log.error(">>>create es client instance failed, please check the configuration.")
+            log.error(
+                ">>>create es client instance failed, please check the configuration."
+            )
 
     def get_instance(self):
         """get es client instance"""
@@ -39,6 +42,7 @@ class ESConst:
     """
     es index name and mapping fields name
     """
+
     index = "mdict_examples_index"
     word = "word"
     example_en = "en"

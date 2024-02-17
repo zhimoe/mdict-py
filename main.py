@@ -13,7 +13,7 @@ from app.query import qry_mdx_def
 
 log = logging.getLogger(__name__)
 # disable elasticsearch INFO log
-logging.getLogger('elasticsearch').setLevel(logging.WARN)
+logging.getLogger("elasticsearch").setLevel(logging.WARN)
 
 
 @post(path="/query")
@@ -37,16 +37,15 @@ app = Litestar(
         engine=JinjaTemplateEngine,
     ),
     static_files_config=[
-        StaticFilesConfig(path="/", directories=[Path("resources/static")], html_mode=True),
-    ]
+        StaticFilesConfig(
+            path="/", directories=[Path("resources/static")], html_mode=True
+        ),
+    ],
 )
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     """
     阅读readme和config.ini
     """
-    print('app is running on http://localhost:8080')
-    uvicorn.run(
-        app=app,
-        port=8080
-    )
+    print("app is running on http://localhost:8080")
+    uvicorn.run(app=app, port=8080)

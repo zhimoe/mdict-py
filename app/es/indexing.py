@@ -79,29 +79,43 @@ def _example_parse(dictionary: str, word: str, raw_html: str) -> List[ESDoc]:
     if not raw_html:
         return result
     bs = BeautifulSoup(raw_html, "html.parser")
-    if dictionary == 'O8C':
-        examples = bs.find_all('span', attrs={"level": "4", "class": "x-g"})
+    if dictionary == "O8C":
+        examples = bs.find_all("span", attrs={"level": "4", "class": "x-g"})
         for example in examples:
             try:
-                en = example.find('span', attrs={"level": "5", "class": "x"})
-                zh = example.find('span', attrs={"level": "5", "class": "tx"})
+                en = example.find("span", attrs={"level": "5", "class": "x"})
+                zh = example.find("span", attrs={"level": "5", "class": "tx"})
                 if en and zh:
-                    result.append(ESDoc(dictionary, word, en.text, zh.text, example.encode_contents().decode()))
+                    result.append(
+                        ESDoc(
+                            dictionary,
+                            word,
+                            en.text,
+                            zh.text,
+                            example.encode_contents().decode(),
+                        )
+                    )
             except Exception as e:
                 logging.exception(e, exc_info=True)
                 logging.info(f">>>parse failed, element: {example}")
-    if dictionary == 'LSC4':
-        examples = bs.find_all('span', attrs={'class': "example"})
+    if dictionary == "LSC4":
+        examples = bs.find_all("span", attrs={"class": "example"})
         for example in examples:
             try:
                 en = example.next.text
                 zh = example.next.nextSibling.text
-                result.append(ESDoc(dictionary, word, en, zh, example.encode_contents().decode()))
+                result.append(
+                    ESDoc(dictionary, word, en, zh, example.encode_contents().decode())
+                )
             except AttributeError:
-                if example.has_attr('toolskip'):
+                if example.has_attr("toolskip"):
                     en = example.text
                     zh = example.text
-                    result.append(ESDoc(dictionary, word, en, zh, example.encode_contents().decode()))
+                    result.append(
+                        ESDoc(
+                            dictionary, word, en, zh, example.encode_contents().decode()
+                        )
+                    )
                 else:
                     log.info(f">>>parse failed, element: {example}")
     return result
@@ -114,40 +128,23 @@ def _create_index(client) -> bool:
         return False
     mapping = {
         "settings": {
-            "index": {
-                "number_of_shards": 1,
-                "number_of_replicas": 1
-            },
+            "index": {"number_of_shards": 1, "number_of_replicas": 1},
             "analysis": {
                 "analyzer": {
-                    "default": {
-                        "type": "standard"
-                    },
-                    "default_search": {
-                        "type": "standard"
-                    }
+                    "default": {"type": "standard"},
+                    "default_search": {"type": "standard"},
                 }
-            }
+            },
         },
         "mappings": {
             "properties": {
-                ESConst.dictionary: {
-                    "type": "keyword"
-                },
-                ESConst.word: {
-                    "type": "keyword"
-                },
-                ESConst.example_en: {
-                    "type": "text"
-                },
-                ESConst.example_zh: {
-                    "type": "text"
-                },
-                ESConst.example_html: {
-                    "type": "text"
-                }
+                ESConst.dictionary: {"type": "keyword"},
+                ESConst.word: {"type": "keyword"},
+                ESConst.example_en: {"type": "text"},
+                ESConst.example_zh: {"type": "text"},
+                ESConst.example_html: {"type": "text"},
             }
-        }
+        },
     }
 
     resp = client.indices.create(index=ESConst.index, body=mapping)

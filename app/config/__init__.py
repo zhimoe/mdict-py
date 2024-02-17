@@ -34,7 +34,7 @@ class AIConfig:
 
 def _init():
     parser = configparser.ConfigParser()
-    parser.read((project_root() / "config.ini"), encoding='utf8')
+    parser.read((project_root() / "config.ini"), encoding="utf8")
     global es_config
     es_config = ESConfig(parser)
     global ai_config
