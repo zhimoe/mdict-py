@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "mdict-py"
-version = "0.1.0"
+version = "1.0"
 description = ""
 authors = ["zhimoe"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.11.7"
+python = "3.12.2"
 litestar = "2.2.1"
 pydantic = "2.4.2"
 inflect = "7.0.0"
@@ -16,8 +16,6 @@ beautifulsoup4 = "4.12.2"
 jinja2 = "3.1.2"
 uvloop = "0.17.0"
 uvicorn = "0.23.2"
-#rich = "*"
-#asonic = "*"
 
 
 [build-system]
@@ -27,12 +25,12 @@ build-backend = "poetry.core.masonry.api"
 [[tool.poetry.source]]
 name = "tsinghua"
 url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-priority = "default"
+priority = "primary"
 
 [tool.pyright]
 venvPath = "."
 venv = ".venv"
-pythonVersion = "3.11"
+pythonVersion = "3.12"
 
 [tool.ruff]
 line-length = 88
