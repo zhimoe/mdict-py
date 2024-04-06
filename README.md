@@ -66,3 +66,8 @@ TDB
 
 1. 增加牛津词典的例句到ES
 2. 寻找更好的AI翻译模型
+
+### how use uv tool
+```bash
+
+```

@@ -47,5 +47,4 @@ if __name__ == "__main__":
     """
     阅读readme和config.ini
     """
-    print("app is running on http://localhost:8080")
     uvicorn.run(app=app, port=8080)
