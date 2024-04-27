@@ -22,8 +22,7 @@ Mdict项目是一个糅合了MDX词典、ES例句搜索和AI模型翻译的多�
 
    MDX词典文件是一种流行的词典打包格式。目前只能在 Mdict, GoldenDict, 欧路，深蓝等词典软件中使用，而不能将内容对外输出。
    MDX Server 通过读取 MDX、MDD 格式的词典文件，对外部提供一个标准的 HTTP 服务接口。
-   MDX Server 核心功能由 [mdict-query](https://github.com/mmjang/mdict-query)
-   和 [PythonDictionaryOnline](https://github.com/amazon200code/PythonDictionaryOnline) 整合而成。
+   MDX Server 核心功能参考[mdict-analysis](https://bitbucket.org/xwang/mdict-analysis/src/master/)（参考的2016年版本，该库已更新支持3.0 mdx文件）
 
 2. [transformer中英文翻译模型项目](https://huggingface.co/Helsinki-NLP)
 
